@@ -6,7 +6,7 @@ import java.util.List;
 import org.philhosoft.mif.model.data.MifData;
 
 /**
- * A MIF file: header and data.<br>
+ * A MIF (MapInfo Interchange Format) file: header and data.<br>
  * See http://reference.mapinfo.com/software/spatial_server/english/1_0/onprem/apiguide/LIM/source/UserDefinedSpatialDatabases/mapinfomifmidformat.html
  */
 public class MifFileContent
@@ -14,7 +14,7 @@ public class MifFileContent
 	private String version;
 	private String charset;
 	private String delimiter;
-	private List<MifColumn> columns = new ArrayList<MifColumn>();
+	private List<Column> columns = new ArrayList<Column>();
 	private List<MifData> mifData = new ArrayList<MifData>();
 
 	public String getVersion()
@@ -44,11 +44,11 @@ public class MifFileContent
 		this.delimiter = delimiter;
 	}
 
-	public List<MifColumn> getColumns()
+	public List<Column> getColumns()
 	{
 		return columns;
 	}
-	public void addColumn(MifColumn column)
+	public void addColumn(Column column)
 	{
 		columns.add(column);
 	}

@@ -30,7 +30,7 @@ public class MifReader
 			}
 			catch (IOException e)
 			{
-				messages.add(new MifMessage(MifMessage.Type.ERROR, 0, e.getMessage()));
+				messages.add(new Message(Message.Type.ERROR, 0, e.getMessage()));
 			}
 		}
 	}
@@ -79,20 +79,20 @@ public class MifReader
 		return fileReader.getLineNumber() + 1;
 	}
 
-	public void addMessage(MifMessage message)
+	public void addMessage(Message message)
 	{
 		messages.add(message);
 	}
 
 	public void addError(String message)
 	{
-		MifMessage error = new MifMessage(MifMessage.Type.ERROR, getCurrentLineNumber(), message);
+		Message error = new Message(Message.Type.ERROR, getCurrentLineNumber(), message);
 		addMessage(error);
 	}
 
 	public void addWarning(String message)
 	{
-		MifMessage warning = new MifMessage(MifMessage.Type.WARNING, getCurrentLineNumber(), message);
+		Message warning = new Message(Message.Type.WARNING, getCurrentLineNumber(), message);
 		addMessage(warning);
 	}
 

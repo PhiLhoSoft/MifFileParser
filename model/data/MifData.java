@@ -7,16 +7,16 @@ public interface MifData
 
 	interface Visitor<IN, OUT>
 	{
-		OUT visit(MifArc data, IN in);
-		OUT visit(MifEllipse data, IN in);
-		OUT visit(MifLine data, IN in);
-		OUT visit(MifNone data, IN in);
-		OUT visit(MifPoint data, IN in);
-		OUT visit(MifPolyline data, IN in);
-		OUT visit(MifRectangle data, IN in);
-		OUT visit(MifRegion data, IN in);
-		OUT visit(MifRoundedRectangle data, IN in);
-		OUT visit(MifText data, IN in);
+		OUT visit(Arc data, IN in);
+		OUT visit(Ellipse data, IN in);
+		OUT visit(Line data, IN in);
+		OUT visit(None data, IN in);
+		OUT visit(Point data, IN in);
+		OUT visit(Polyline data, IN in);
+		OUT visit(Rectangle data, IN in);
+		OUT visit(Region data, IN in);
+		OUT visit(RoundedRectangle data, IN in);
+		OUT visit(Text data, IN in);
 	}
 }
 

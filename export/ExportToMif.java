@@ -5,26 +5,26 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import org.philhosoft.mif.model.MifFileContent;
-import org.philhosoft.mif.model.data.MifArc;
+import org.philhosoft.mif.model.data.Arc;
 import org.philhosoft.mif.model.data.MifData;
-import org.philhosoft.mif.model.data.MifEllipse;
-import org.philhosoft.mif.model.data.MifLine;
-import org.philhosoft.mif.model.data.MifNone;
-import org.philhosoft.mif.model.data.MifPoint;
-import org.philhosoft.mif.model.data.MifPolyline;
-import org.philhosoft.mif.model.data.MifRectangle;
-import org.philhosoft.mif.model.data.MifRegion;
-import org.philhosoft.mif.model.data.MifRoundedRectangle;
-import org.philhosoft.mif.model.data.MifText;
-import org.philhosoft.mif.parser.data.MifArcParser;
-import org.philhosoft.mif.parser.data.MifEllipseParser;
-import org.philhosoft.mif.parser.data.MifLineParser;
-import org.philhosoft.mif.parser.data.MifPointParser;
-import org.philhosoft.mif.parser.data.MifPolylineParser;
-import org.philhosoft.mif.parser.data.MifRectangleParser;
-import org.philhosoft.mif.parser.data.MifRegionParser;
-import org.philhosoft.mif.parser.data.MifRoundedRectangleParser;
-import org.philhosoft.mif.parser.data.MifTextParser;
+import org.philhosoft.mif.model.data.Ellipse;
+import org.philhosoft.mif.model.data.Line;
+import org.philhosoft.mif.model.data.None;
+import org.philhosoft.mif.model.data.Point;
+import org.philhosoft.mif.model.data.Polyline;
+import org.philhosoft.mif.model.data.Rectangle;
+import org.philhosoft.mif.model.data.Region;
+import org.philhosoft.mif.model.data.RoundedRectangle;
+import org.philhosoft.mif.model.data.Text;
+import org.philhosoft.mif.parser.data.ArcParser;
+import org.philhosoft.mif.parser.data.EllipseParser;
+import org.philhosoft.mif.parser.data.LineParser;
+import org.philhosoft.mif.parser.data.PointParser;
+import org.philhosoft.mif.parser.data.PolylineParser;
+import org.philhosoft.mif.parser.data.RectangleParser;
+import org.philhosoft.mif.parser.data.RegionParser;
+import org.philhosoft.mif.parser.data.RoundedRectangleParser;
+import org.philhosoft.mif.parser.data.TextParser;
 
 /**
  * Exports a Mif data structure to the Mif format.
@@ -67,11 +67,11 @@ public class ExportToMif
 class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 {
 	@Override
-	public Boolean visit(MifArc data, ExportToMif exporter)
+	public Boolean visit(Arc data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifArcParser.KEYWORD);
+			exporter.write(ArcParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -81,11 +81,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifEllipse data, ExportToMif exporter)
+	public Boolean visit(Ellipse data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifEllipseParser.KEYWORD);
+			exporter.write(EllipseParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -95,11 +95,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifLine data, ExportToMif exporter)
+	public Boolean visit(Line data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifLineParser.KEYWORD);
+			exporter.write(LineParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -109,7 +109,7 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifNone data, ExportToMif exporter)
+	public Boolean visit(None data, ExportToMif exporter)
 	{
 		try
 		{
@@ -123,11 +123,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifPoint data, ExportToMif exporter)
+	public Boolean visit(Point data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifPointParser.KEYWORD);
+			exporter.write(PointParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -137,11 +137,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifPolyline data, ExportToMif exporter)
+	public Boolean visit(Polyline data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifPolylineParser.KEYWORD);
+			exporter.write(PolylineParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -151,11 +151,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifRectangle data, ExportToMif exporter)
+	public Boolean visit(Rectangle data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifRectangleParser.KEYWORD);
+			exporter.write(RectangleParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -165,11 +165,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifRegion data, ExportToMif exporter)
+	public Boolean visit(Region data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifRegionParser.KEYWORD);
+			exporter.write(RegionParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -179,11 +179,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifRoundedRectangle data, ExportToMif exporter)
+	public Boolean visit(RoundedRectangle data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifRoundedRectangleParser.KEYWORD);
+			exporter.write(RoundedRectangleParser.KEYWORD);
 		}
 		catch (IOException e)
 		{
@@ -193,11 +193,11 @@ class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 	}
 
 	@Override
-	public Boolean visit(MifText data, ExportToMif exporter)
+	public Boolean visit(Text data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(MifTextParser.KEYWORD);
+			exporter.write(TextParser.KEYWORD);
 		}
 		catch (IOException e)
 		{

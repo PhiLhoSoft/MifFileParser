@@ -5,16 +5,16 @@ import java.util.List;
 
 import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.model.data.MifData;
-import org.philhosoft.mif.parser.data.MifArcParser;
+import org.philhosoft.mif.parser.data.ArcParser;
 import org.philhosoft.mif.parser.data.MifDataParser;
-import org.philhosoft.mif.parser.data.MifEllipseParser;
-import org.philhosoft.mif.parser.data.MifLineParser;
-import org.philhosoft.mif.parser.data.MifPointParser;
-import org.philhosoft.mif.parser.data.MifPolylineParser;
-import org.philhosoft.mif.parser.data.MifRectangleParser;
-import org.philhosoft.mif.parser.data.MifRegionParser;
-import org.philhosoft.mif.parser.data.MifRoundedRectangleParser;
-import org.philhosoft.mif.parser.data.MifTextParser;
+import org.philhosoft.mif.parser.data.EllipseParser;
+import org.philhosoft.mif.parser.data.LineParser;
+import org.philhosoft.mif.parser.data.PointParser;
+import org.philhosoft.mif.parser.data.PolylineParser;
+import org.philhosoft.mif.parser.data.RectangleParser;
+import org.philhosoft.mif.parser.data.RegionParser;
+import org.philhosoft.mif.parser.data.RoundedRectangleParser;
+import org.philhosoft.mif.parser.data.TextParser;
 
 public class MifFileContentParser
 {
@@ -22,21 +22,21 @@ public class MifFileContentParser
 
 	public MifFileContentParser()
 	{
-		parsers.add(new MifRegionParser());
-		parsers.add(new MifPolylineParser());
-		parsers.add(new MifPointParser());
-		parsers.add(new MifTextParser());
-		parsers.add(new MifLineParser());
-		parsers.add(new MifRectangleParser());
-		parsers.add(new MifRoundedRectangleParser());
-		parsers.add(new MifPointParser());
-		parsers.add(new MifEllipseParser());
-		parsers.add(new MifArcParser());
+		parsers.add(new RegionParser());
+		parsers.add(new PolylineParser());
+		parsers.add(new PointParser());
+		parsers.add(new TextParser());
+		parsers.add(new LineParser());
+		parsers.add(new RectangleParser());
+		parsers.add(new RoundedRectangleParser());
+		parsers.add(new PointParser());
+		parsers.add(new EllipseParser());
+		parsers.add(new ArcParser());
 	}
 
 	public MifFileContent parseContent(MifReader reader)
 	{
-		MifHeaderParser headerParser = new MifHeaderParser();
+		HeaderParser headerParser = new HeaderParser();
 		MifFileContent fileContent = headerParser.parse(reader);
 		if (reader.getMessageCollector().hasErrors())
 		{
