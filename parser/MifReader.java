@@ -2,10 +2,8 @@ package org.philhosoft.mif.parser;
 
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
@@ -14,12 +12,12 @@ public class MifReader
 {
 	private LineNumberReader fileReader;
 	private String currentLine;
-	private MessageCollector messages;
+	private MessageCollector messages = new MessageCollector();
 	private boolean keepCurrentLine;
 
-	public MifReader(File mifFile) throws FileNotFoundException
+	public MifReader(InputStream in)
 	{
-		fileReader = new LineNumberReader(new BufferedReader(new InputStreamReader(new FileInputStream(mifFile))));
+		fileReader = new LineNumberReader(new BufferedReader(new InputStreamReader(in)));
 	}
 
 	public void close()
@@ -58,7 +56,7 @@ public class MifReader
 			addError(e.getMessage());
 			currentLine = null;
 		}
-		return currentLine == null;
+		return currentLine != null;
 	}
 
 	/**
@@ -78,7 +76,7 @@ public class MifReader
 
 	public int getCurrentLineNumber()
 	{
-		return fileReader.getLineNumber();
+		return fileReader.getLineNumber() + 1;
 	}
 
 	public void addMessage(MifMessage message)
@@ -98,7 +96,7 @@ public class MifReader
 		addMessage(warning);
 	}
 
-	public MessageCollector getErrorCollector()
+	public MessageCollector getMessageCollector()
 	{
 		return messages;
 	}

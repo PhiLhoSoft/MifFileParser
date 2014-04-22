@@ -33,7 +33,7 @@ public class MifMessage
 	@Override
 	public String toString()
 	{
-		return lineNumber + " - " + message;
+		return type + " [" + lineNumber + "] " + message;
 	}
 }
 

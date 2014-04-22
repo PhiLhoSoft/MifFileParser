@@ -8,7 +8,7 @@ public class MifHeaderLineParser
 	public String parse(String keyword, MifReader reader)
 	{
 		String line = reader.getCurrentLine();
-		if (line != null && line.startsWith(keyword))
+		if (line != null && line.toUpperCase().startsWith(keyword))
 		{
 			return line.substring(keyword.length()).trim();
 		}

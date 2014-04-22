@@ -1,7 +1,5 @@
 package org.philhosoft.mif.parser;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,22 +16,12 @@ import org.philhosoft.mif.parser.data.MifRegionParser;
 import org.philhosoft.mif.parser.data.MifRoundedRectangleParser;
 import org.philhosoft.mif.parser.data.MifTextParser;
 
-public class MifFileParser
+public class MifFileContentParser
 {
-	public static void main(String[] args) throws FileNotFoundException
+	private List<MifDataParser> parsers = new ArrayList<>();
+
+	public MifFileContentParser()
 	{
-		MifReader reader = new MifReader(new File(""));
-
-		MifHeaderParser headerParser = new MifHeaderParser();
-		MifFileContent fileContent = headerParser.parse(reader);
-		if (reader.getErrorCollector().hasErrors())
-		{
-			// Output errors some way...
-
-			return;
-		}
-
-		List<MifDataParser> parsers = new ArrayList<>();
 		parsers.add(new MifRegionParser());
 		parsers.add(new MifPolylineParser());
 		parsers.add(new MifPointParser());
@@ -44,18 +32,36 @@ public class MifFileParser
 		parsers.add(new MifPointParser());
 		parsers.add(new MifEllipseParser());
 		parsers.add(new MifArcParser());
+	}
+
+	public MifFileContent parseContent(MifReader reader)
+	{
+		MifHeaderParser headerParser = new MifHeaderParser();
+		MifFileContent fileContent = headerParser.parse(reader);
+		if (reader.getMessageCollector().hasErrors())
+		{
+			return fileContent; // Partial content?
+		}
 
 		while (reader.readNextLine())
 		{
+			boolean parsed = false;
 			for (MifDataParser parser : parsers)
 			{
 				if (parser.canParse(reader))
 				{
 					MifData data = parser.parseData(reader);
 					fileContent.add(data);
+					parsed = true;
 					break;
 				}
 			}
+			if (!parsed)
+			{
+				reader.addWarning("Unrecognized line " + reader.getCurrentLineNumber() + ";ignored");
+			}
 		}
+
+		return fileContent;
 	}
 }

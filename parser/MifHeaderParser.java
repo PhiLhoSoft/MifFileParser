@@ -32,7 +32,17 @@ public class MifHeaderParser
 	{
 		MifHeaderLineParser lineParser = new MifHeaderLineParser();
 		MifFileContent fc = new MifFileContent();
+		if (!reader.readNextLine())
+		{
+			reader.addError("Invalid file (no VERSION)");
+			return fc;
+		}
 		fc.setVersion(lineParser.parse("VERSION", reader));
+		if (!reader.readNextLine())
+		{
+			reader.addError("Invalid file (no CHARSET)");
+			return fc;
+		}
 		fc.setCharset(lineParser.parse("CHARSET", reader));
 
 		// Tries to parse each kind of optional header
@@ -45,24 +55,27 @@ public class MifHeaderParser
 		}
 
 		String columnNbParam = lineParser.parse("COLUMNS", reader);
-		if (columnNbParam == null)
+		if (columnNbParam != null)
 		{
-			reader.addError("COLUMNS field not found");
-			return fc;
+			int columnNb = 0;
+			try
+			{
+				columnNb = Integer.parseInt(columnNbParam);
+			}
+			catch (NumberFormatException e)
+			{
+				reader.addError("Incorrect COLUMNS parameter");
+				return fc;
+			}
+			for (int c = 0; c < columnNb; c++)
+			{
+				reader.readNextLine(); // Skip these lines for now?
+			}
 		}
-		int columnNb = 0;
-		try
+		else
 		{
-			columnNb = Integer.parseInt(columnNbParam);
-		}
-		catch (NumberFormatException e)
-		{
-			reader.addError("Incorrect COLUMNS parameter");
-			return fc;
-		}
-		for (int c = 0; c < columnNb; c++)
-		{
-			reader.readNextLine(); // Skip these lines for now?
+			// According to spec, it should be mandatory, so it should be an error...
+			reader.addWarning("COLUMNS field not found");
 		}
 
 		reader.readNextLine();

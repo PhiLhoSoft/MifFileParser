@@ -10,16 +10,17 @@ import org.philhosoft.mif.parser.MifDefaultParser;
 import org.philhosoft.mif.parser.MifReader;
 import org.philhosoft.mif.parser.parameter.MifBrushParser;
 import org.philhosoft.mif.parser.parameter.MifCenterParser;
+import org.philhosoft.mif.parser.parameter.MifCoordinatePairParser;
 import org.philhosoft.mif.parser.parameter.MifPenParser;
 
 
 /*
  REGION numpolygons
- numpts1
+   numpts1
  x1 y1
  x2 y2
  :
- [ numpts2
+ [  numpts2
  x1 y1
  x2 y2 ]
  :
@@ -31,6 +32,7 @@ public class MifRegionParser extends MifDefaultParser implements MifDataParser
 {
 	public static final String KEYWORD = "REGION";
 
+	private MifCoordinatePairParser coordinatesParser = new MifCoordinatePairParser();
 	private MifPenParser penParser = new MifPenParser();
 	private MifBrushParser brushParser = new MifBrushParser();
 	private MifCenterParser centerParser = new MifCenterParser();
@@ -47,12 +49,54 @@ public class MifRegionParser extends MifDefaultParser implements MifDataParser
 		MifRegion mifRegion = new MifRegion();
 
 		// Read data
+		String line = reader.getCurrentLine();
+		if (line == null)
+			throw new IllegalStateException("Expected line at " + reader.getCurrentLineNumber() + " for " + getKeyword());
+		String parameter = line.substring(getKeyword().length() + 1);
+		int polygonNumber = 0;
+		try
+		{
+			polygonNumber = Integer.valueOf(parameter);
+		}
+		catch (NumberFormatException e)
+		{
+			reader.addError("Invalid number of polygons for " + getKeyword());
+			return mifRegion;
+		}
+
+		for (int i = 0; i < polygonNumber; i++)
+		{
+			readPolygon(mifRegion, reader);
+		}
 
 		// Read options
 		while (reader.readNextLine() && parseOption(mifRegion, reader))
 		{}
 
 		return mifRegion;
+	}
+
+	private void readPolygon(MifRegion mifRegion, MifReader reader)
+	{
+		reader.readNextLine();
+		String line = reader.getCurrentLine();
+		int coordinateNb = 0;
+		try
+		{
+			coordinateNb = Integer.valueOf(line);
+		}
+		catch (NumberFormatException e)
+		{
+			reader.addError("Invalid number of coordinates for " + getKeyword());
+			return;
+		}
+		mifRegion.addPolygon();
+		for (int i = 0; i < coordinateNb; i++)
+		{
+			reader.readNextLine();
+			MifCoordinatePair coordinates = (MifCoordinatePair) coordinatesParser.parseParameter(reader);
+			mifRegion.addCoordinates(coordinates);
+		}
 	}
 
 	private boolean parseOption(MifRegion mifRegion, MifReader reader)

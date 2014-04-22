@@ -35,6 +35,20 @@ public class MifRoundedRectangleParser extends MifFourCoordinatesDataParser impl
 		parseCoordinates(reader);
 
 		MifRoundedRectangle mifRoundedRectangle = new MifRoundedRectangle(coordinates1, coordinates2);
+
+		reader.readNextLine();
+		String line = reader.getCurrentLine();
+		double rounding = 0;
+		try
+		{
+			rounding = Double.parseDouble(line);
+		}
+		catch (NumberFormatException e)
+		{
+			reader.addError("Invalid rounded rectangle degree of rounding");
+		}
+		mifRoundedRectangle.setDegreeOfRounding(rounding);
+
 		while (reader.readNextLine() && parseOption(mifRoundedRectangle, reader))
 		{}
 

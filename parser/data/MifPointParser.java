@@ -51,6 +51,10 @@ public class MifPointParser extends MifDefaultParser implements MifDataParser
 				MifSymbol symbol = (MifSymbol) parser.parseParameter(reader);
 				mifPoint.setSymbol(symbol);
 			}
+			else
+			{
+				reader.pushBackLine();
+			}
 		}
 
 		return mifPoint;
