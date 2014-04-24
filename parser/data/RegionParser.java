@@ -7,7 +7,7 @@ import org.philhosoft.mif.model.parameter.Brush;
 import org.philhosoft.mif.model.parameter.CoordinatePair;
 import org.philhosoft.mif.model.parameter.Pen;
 import org.philhosoft.mif.parser.DefaultParser;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 import org.philhosoft.mif.parser.parameter.BrushParser;
 import org.philhosoft.mif.parser.parameter.CenterParser;
 import org.philhosoft.mif.parser.parameter.CoordinatePairParser;
@@ -44,14 +44,15 @@ public class RegionParser extends DefaultParser implements MifDataParser
 	}
 
 	@Override
-	public MifData parseData(MifReader reader)
+	public MifData parseData(ParsingContext context)
 	{
 		Region mifRegion = new Region();
 
 		// Read data
-		String line = reader.getCurrentLine();
+		String line = context.getCurrentLine();
 		if (line == null)
-			throw new IllegalStateException("Expected line at " + reader.getCurrentLineNumber() + " for " + getKeyword());
+			throw new IllegalStateException();
+
 		String parameter = line.substring(getKeyword().length() + 1);
 		int polygonNumber = 0;
 		try
@@ -60,26 +61,26 @@ public class RegionParser extends DefaultParser implements MifDataParser
 		}
 		catch (NumberFormatException e)
 		{
-			reader.addError("Invalid number of polygons for " + getKeyword());
+			context.addError("Invalid number of polygons for " + getKeyword());
 			return mifRegion;
 		}
 
 		for (int i = 0; i < polygonNumber; i++)
 		{
-			readPolygon(mifRegion, reader);
+			readPolygon(mifRegion, context);
 		}
 
 		// Read options
-		while (reader.readNextLine() && parseOption(mifRegion, reader))
+		while (context.readNextLine() && parseOption(mifRegion, context))
 		{}
 
 		return mifRegion;
 	}
 
-	private void readPolygon(Region mifRegion, MifReader reader)
+	private void readPolygon(Region mifRegion, ParsingContext context)
 	{
-		reader.readNextLine();
-		String line = reader.getCurrentLine();
+		context.readNextLine();
+		String line = context.getCurrentLine();
 		int coordinateNb = 0;
 		try
 		{
@@ -87,39 +88,39 @@ public class RegionParser extends DefaultParser implements MifDataParser
 		}
 		catch (NumberFormatException e)
 		{
-			reader.addError("Invalid number of coordinates for " + getKeyword());
+			context.addError("Invalid number of coordinates for " + getKeyword());
 			return;
 		}
 		mifRegion.addPolygon();
 		for (int i = 0; i < coordinateNb; i++)
 		{
-			reader.readNextLine();
-			CoordinatePair coordinates = (CoordinatePair) coordinatesParser.parseParameter(reader);
+			context.readNextLine();
+			CoordinatePair coordinates = (CoordinatePair) coordinatesParser.parseParameter(context);
 			mifRegion.addCoordinates(coordinates);
 		}
 	}
 
-	private boolean parseOption(Region mifRegion, MifReader reader)
+	private boolean parseOption(Region mifRegion, ParsingContext context)
 	{
-		if (penParser.canParse(reader))
+		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(reader);
+			Pen pen = (Pen) penParser.parseParameter(context);
 			mifRegion.setPen(pen);
 			return true;
 		}
-		if (brushParser.canParse(reader))
+		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(reader);
+			Brush brush = (Brush) brushParser.parseParameter(context);
 			mifRegion.setBrush(brush);
 			return true;
 		}
-		if (centerParser.canParse(reader))
+		if (centerParser.canParse(context))
 		{
-			CoordinatePair center = (CoordinatePair) centerParser.parseParameter(reader);
+			CoordinatePair center = (CoordinatePair) centerParser.parseParameter(context);
 			mifRegion.setCenter(center);
 			return true;
 		}
-		reader.pushBackLine();
+		context.pushBackLine();
 		return false;
 	}
 }

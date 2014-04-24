@@ -6,9 +6,9 @@ import java.util.List;
 import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.parser.data.ArcParser;
-import org.philhosoft.mif.parser.data.MifDataParser;
 import org.philhosoft.mif.parser.data.EllipseParser;
 import org.philhosoft.mif.parser.data.LineParser;
+import org.philhosoft.mif.parser.data.MifDataParser;
 import org.philhosoft.mif.parser.data.PointParser;
 import org.philhosoft.mif.parser.data.PolylineParser;
 import org.philhosoft.mif.parser.data.RectangleParser;
@@ -34,23 +34,23 @@ public class MifFileContentParser
 		parsers.add(new ArcParser());
 	}
 
-	public MifFileContent parseContent(MifReader reader)
+	public MifFileContent parseContent(ParsingContext context)
 	{
 		HeaderParser headerParser = new HeaderParser();
-		MifFileContent fileContent = headerParser.parse(reader);
-		if (reader.getMessageCollector().hasErrors())
+		MifFileContent fileContent = headerParser.parse(context);
+		if (context.getMessageCollector().hasErrors())
 		{
 			return fileContent; // Partial content?
 		}
 
-		while (reader.readNextLine())
+		while (context.readNextLine())
 		{
 			boolean parsed = false;
 			for (MifDataParser parser : parsers)
 			{
-				if (parser.canParse(reader))
+				if (parser.canParse(context))
 				{
-					MifData data = parser.parseData(reader);
+					MifData data = parser.parseData(context);
 					fileContent.add(data);
 					parsed = true;
 					break;
@@ -58,7 +58,7 @@ public class MifFileContentParser
 			}
 			if (!parsed)
 			{
-				reader.addWarning("Unrecognized line " + reader.getCurrentLineNumber() + ";ignored");
+				context.addWarning("Unrecognized line: ignored");
 			}
 		}
 

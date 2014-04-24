@@ -4,7 +4,7 @@ package org.philhosoft.mif.parser.parameter;
 import org.philhosoft.mif.model.parameter.MifDataParameter;
 import org.philhosoft.mif.model.parameter.Symbol;
 import org.philhosoft.mif.parser.DefaultParser;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 
 
 public class SymbolParser extends DefaultParser implements ParameterParser
@@ -18,13 +18,14 @@ public class SymbolParser extends DefaultParser implements ParameterParser
 	}
 
 	@Override
-	public MifDataParameter parseParameter(MifReader reader)
+	public MifDataParameter parseParameter(ParsingContext context)
 	{
-		String line = reader.getCurrentLine();
+		String line = context.getCurrentLine();
 		if (line == null)
 			throw new IllegalStateException();
+
 		String parameter = line.substring(getKeyword().length() + 1);
-		ParameterTripletParser triplet = new ParameterTripletParser(parameter, reader);
+		ParameterTripletParser triplet = new ParameterTripletParser(parameter, context);
 
 		return new Symbol(triplet.getParameter1(), triplet.getParameter2(), triplet.getParameter3());
 	}

@@ -4,7 +4,7 @@ package org.philhosoft.mif.parser.data;
 import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.data.Text;
 import org.philhosoft.mif.parser.DefaultParser;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 
 
 /*
@@ -27,8 +27,9 @@ public class TextParser extends DefaultParser implements MifDataParser
 	}
 
 	@Override
-	public MifData parseData(MifReader reader)
+	public MifData parseData(ParsingContext context)
 	{
+		// TODO
 		return new Text(""); // TODO
 	}
 }

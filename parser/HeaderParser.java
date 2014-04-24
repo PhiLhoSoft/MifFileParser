@@ -23,38 +23,38 @@ public class HeaderParser
 	private static final String[] HEADERS = { "DELIMITER", "UNIQUE", "INDEX", "COORDSYS", "TRANSFORM" };
 
 	/**
-	 * Parses the header, leaving the reader after the DATA line.
+	 * Parses the header, leaving the context after the DATA line.
 	 *
-	 * @param reader  Mif file reader
+	 * @param context  Mif file context
 	 * @return a MifFileContent with the header fields filled
 	 */
-	public MifFileContent parse(MifReader reader)
+	public MifFileContent parse(ParsingContext context)
 	{
 		HeaderLineParser lineParser = new HeaderLineParser();
 		MifFileContent fc = new MifFileContent();
-		if (!reader.readNextLine())
+		if (!context.readNextLine())
 		{
-			reader.addError("Invalid file (no VERSION)");
+			context.addError("Invalid file (no VERSION)");
 			return fc;
 		}
-		fc.setVersion(lineParser.parse("VERSION", reader));
-		if (!reader.readNextLine())
+		fc.setVersion(lineParser.parse("VERSION", context));
+		if (!context.readNextLine())
 		{
-			reader.addError("Invalid file (no CHARSET)");
+			context.addError("Invalid file (no CHARSET)");
 			return fc;
 		}
-		fc.setCharset(lineParser.parse("CHARSET", reader));
+		fc.setCharset(lineParser.parse("CHARSET", context));
 
 		// Tries to parse each kind of optional header
 		int i = 0;
 		boolean successful = true;
-		while (reader.readNextLine() && successful)
+		while (context.readNextLine() && successful)
 		{
-			String value = lineParser.parse(HEADERS[i++], reader);
+			String value = lineParser.parse(HEADERS[i++], context);
 			successful = value != null;
 		}
 
-		String columnNbParam = lineParser.parse("COLUMNS", reader);
+		String columnNbParam = lineParser.parse("COLUMNS", context);
 		if (columnNbParam != null)
 		{
 			int columnNb = 0;
@@ -64,25 +64,25 @@ public class HeaderParser
 			}
 			catch (NumberFormatException e)
 			{
-				reader.addError("Incorrect COLUMNS parameter");
+				context.addError("Incorrect COLUMNS parameter");
 				return fc;
 			}
 			for (int c = 0; c < columnNb; c++)
 			{
-				reader.readNextLine(); // Skip these lines for now?
+				context.readNextLine(); // Skip these lines for now?
 			}
 		}
 		else
 		{
 			// According to spec, it should be mandatory, so it should be an error...
-			reader.addWarning("COLUMNS field not found");
+			context.addWarning("COLUMNS field not found");
 		}
 
-		reader.readNextLine();
-		String data = reader.getCurrentLine();
+		context.readNextLine();
+		String data = context.getCurrentLine();
 		if (!data.equals("DATA"))
 		{
-			reader.addError("No DATA line found");
+			context.addError("No DATA line found");
 			return fc;
 		}
 

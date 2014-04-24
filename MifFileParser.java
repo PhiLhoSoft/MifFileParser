@@ -14,6 +14,7 @@ import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.parser.MessageCollector;
 import org.philhosoft.mif.parser.MifFileContentParser;
 import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 
 public class MifFileParser
 {
@@ -24,11 +25,20 @@ public class MifFileParser
 		File mifFile = new File("C:/Test/Simple.mif"); // TODO read command line options!
 		InputStream is = new FileInputStream(mifFile);
 		MifReader reader = new MifReader(is);
+		ParsingContext context = new ParsingContext(reader);
 
 		MifFileContentParser parser = new MifFileContentParser();
-		MifFileContent fileContent = parser.parseContent(reader);
+		MifFileContent fileContent = null;
+		try
+		{
+			fileContent = parser.parseContent(context);
+		}
+		finally
+		{
+			is.close();
+		}
 
-		MessageCollector collector = reader.getMessageCollector();
+		MessageCollector collector = context.getMessageCollector();
 		// TODO proper management / output of errors! Use a logger...
 		if (collector.hasErrors())
 		{

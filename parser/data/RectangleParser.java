@@ -4,7 +4,7 @@ import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.data.Rectangle;
 import org.philhosoft.mif.model.parameter.Brush;
 import org.philhosoft.mif.model.parameter.Pen;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 import org.philhosoft.mif.parser.parameter.BrushParser;
 import org.philhosoft.mif.parser.parameter.PenParser;
 
@@ -27,32 +27,32 @@ public class RectangleParser extends FourCoordinatesDataParser implements MifDat
 	}
 
 	@Override
-	public MifData parseData(MifReader reader)
+	public MifData parseData(ParsingContext context)
 	{
-		parseCoordinates(reader);
+		parseCoordinates(context);
 
 		Rectangle mifRectangle = new Rectangle(coordinates1, coordinates2);
-		while (reader.readNextLine() && parseOption(mifRectangle, reader))
+		while (context.readNextLine() && parseOption(mifRectangle, context))
 		{}
 
 		return mifRectangle;
 	}
 
-	private boolean parseOption(Rectangle mifRectangle, MifReader reader)
+	private boolean parseOption(Rectangle mifRectangle, ParsingContext context)
 	{
-		if (penParser.canParse(reader))
+		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(reader);
+			Pen pen = (Pen) penParser.parseParameter(context);
 			mifRectangle.setPen(pen);
 			return true;
 		}
-		if (brushParser.canParse(reader))
+		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(reader);
+			Brush brush = (Brush) brushParser.parseParameter(context);
 			mifRectangle.setBrush(brush);
 			return true;
 		}
-		reader.pushBackLine();
+		context.pushBackLine();
 		return false;
 	}
 }

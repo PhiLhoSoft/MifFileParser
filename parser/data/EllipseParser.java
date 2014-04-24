@@ -1,11 +1,11 @@
 package org.philhosoft.mif.parser.data;
 
 
-import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.data.Ellipse;
+import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.parameter.Brush;
 import org.philhosoft.mif.model.parameter.Pen;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 import org.philhosoft.mif.parser.parameter.BrushParser;
 import org.philhosoft.mif.parser.parameter.PenParser;
 
@@ -29,32 +29,32 @@ public class EllipseParser extends FourCoordinatesDataParser implements MifDataP
 	}
 
 	@Override
-	public MifData parseData(MifReader reader)
+	public MifData parseData(ParsingContext context)
 	{
-		parseCoordinates(reader);
+		parseCoordinates(context);
 
 		Ellipse mifEllipse = new Ellipse(coordinates1, coordinates2);
-		while (reader.readNextLine() && parseOption(mifEllipse, reader))
+		while (context.readNextLine() && parseOption(mifEllipse, context))
 		{}
 
 		return mifEllipse;
 	}
 
-	private boolean parseOption(Ellipse mifEllipse, MifReader reader)
+	private boolean parseOption(Ellipse mifEllipse, ParsingContext context)
 	{
-		if (penParser.canParse(reader))
+		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(reader);
+			Pen pen = (Pen) penParser.parseParameter(context);
 			mifEllipse.setPen(pen);
 			return true;
 		}
-		if (brushParser.canParse(reader))
+		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(reader);
+			Brush brush = (Brush) brushParser.parseParameter(context);
 			mifEllipse.setBrush(brush);
 			return true;
 		}
-		reader.pushBackLine();
+		context.pushBackLine();
 		return false;
 	}
 }

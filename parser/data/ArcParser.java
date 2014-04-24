@@ -4,7 +4,7 @@ package org.philhosoft.mif.parser.data;
 import org.philhosoft.mif.model.data.Arc;
 import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.parameter.Pen;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 import org.philhosoft.mif.parser.parameter.PenParser;
 
 
@@ -24,22 +24,22 @@ public class ArcParser extends FourCoordinatesDataParser implements MifDataParse
 	}
 
 	@Override
-	public MifData parseData(MifReader reader)
+	public MifData parseData(ParsingContext context)
 	{
-		parseCoordinates(reader);
+		parseCoordinates(context);
 
 		Arc mifArc = new Arc(coordinates1, coordinates2);
-		if (reader.readNextLine())
+		if (context.readNextLine())
 		{
 			PenParser parser = new PenParser();
-			if (parser.canParse(reader))
+			if (parser.canParse(context))
 			{
-				Pen pen = (Pen) parser.parseParameter(reader);
+				Pen pen = (Pen) parser.parseParameter(context);
 				mifArc.setPen(pen);
 			}
 			else // It is optional
 			{
-				reader.pushBackLine();
+				context.pushBackLine();
 			}
 		}
 

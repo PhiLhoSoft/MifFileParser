@@ -11,93 +11,34 @@ import java.io.LineNumberReader;
 public class MifReader
 {
 	private LineNumberReader fileReader;
-	private String currentLine;
-	private MessageCollector messages = new MessageCollector();
-	private boolean keepCurrentLine;
 
 	public MifReader(InputStream in)
 	{
 		fileReader = new LineNumberReader(new BufferedReader(new InputStreamReader(in)));
 	}
 
-	public void close()
-	{
-		if (fileReader != null)
-		{
-			try
-			{
-				fileReader.close();
-			}
-			catch (IOException e)
-			{
-				messages.add(new Message(Message.Type.ERROR, 0, e.getMessage()));
-			}
-		}
-	}
-
 	/**
 	 * Reads next line from the file.
 	 *
-	 * @return true if successful
+	 * @param errorHandler to record an error, if any
+	 * @return the line if successful, null otherwise (error or end of file).
+	 *         In case of error, the exception message is added to the context.
 	 */
-	public boolean readNextLine()
+	public String readLine(ParsingContext errorHandler)
 	{
-		if (keepCurrentLine)
-		{
-			keepCurrentLine = false;
-			return true;
-		}
 		try
 		{
-			currentLine = fileReader.readLine();
+			return fileReader.readLine();
 		}
 		catch (IOException e)
 		{
-			addError(e.getMessage());
-			currentLine = null;
-		}
-		return currentLine != null;
-	}
-
-	/**
-	 * If a parser cannot parse the current line, it can push it back, so that readNextLine() does nothing.
-	 */
-	public void pushBackLine()
-	{
-		keepCurrentLine = true;
-	}
-
-	public String getCurrentLine()
-	{
-		if (currentLine == null)
+			errorHandler.addError(e.getMessage());
 			return null;
-		return currentLine.trim();
+		}
 	}
 
 	public int getCurrentLineNumber()
 	{
 		return fileReader.getLineNumber() + 1;
-	}
-
-	public void addMessage(Message message)
-	{
-		messages.add(message);
-	}
-
-	public void addError(String message)
-	{
-		Message error = new Message(Message.Type.ERROR, getCurrentLineNumber(), message);
-		addMessage(error);
-	}
-
-	public void addWarning(String message)
-	{
-		Message warning = new Message(Message.Type.WARNING, getCurrentLineNumber(), message);
-		addMessage(warning);
-	}
-
-	public MessageCollector getMessageCollector()
-	{
-		return messages;
 	}
 }

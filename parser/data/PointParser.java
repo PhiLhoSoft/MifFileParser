@@ -6,7 +6,7 @@ import org.philhosoft.mif.model.data.Point;
 import org.philhosoft.mif.model.parameter.CoordinatePair;
 import org.philhosoft.mif.model.parameter.Symbol;
 import org.philhosoft.mif.parser.DefaultParser;
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 import org.philhosoft.mif.parser.parameter.CoordinatePairParser;
 import org.philhosoft.mif.parser.parameter.SymbolParser;
 
@@ -26,34 +26,34 @@ public class PointParser extends DefaultParser implements MifDataParser
 	}
 
 	@Override
-	public MifData parseData(MifReader reader)
+	public MifData parseData(ParsingContext context)
 	{
-		String line = reader.getCurrentLine();
+		String line = context.getCurrentLine();
 		if (line == null)
 			throw new IllegalStateException();
 		String parameter = line.substring(getKeyword().length() + 1);
 		String[] coordinates = parameter.split(" ");
 		if (coordinates.length != 2)
 		{
-			reader.addError("Invalid point, must have 2 coordinates");
+			context.addError("Invalid point, must have 2 coordinates");
 			return null;
 		}
 
-		CoordinatePair coordinatePair = CoordinatePairParser.parseCoordinates(coordinates[0], coordinates[1], reader);
+		CoordinatePair coordinatePair = CoordinatePairParser.parseCoordinates(coordinates[0], coordinates[1], context);
 
 		Point mifPoint = new Point(coordinatePair);
-		if (reader.readNextLine())
+		if (context.readNextLine())
 		{
-			line = reader.getCurrentLine();
+			line = context.getCurrentLine();
 			SymbolParser parser = new SymbolParser();
-			if (parser.canParse(reader))
+			if (parser.canParse(context))
 			{
-				Symbol symbol = (Symbol) parser.parseParameter(reader);
+				Symbol symbol = (Symbol) parser.parseParameter(context);
 				mifPoint.setSymbol(symbol);
 			}
 			else
 			{
-				reader.pushBackLine();
+				context.pushBackLine();
 			}
 		}
 

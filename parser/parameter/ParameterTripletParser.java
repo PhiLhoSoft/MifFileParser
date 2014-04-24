@@ -1,24 +1,24 @@
 package org.philhosoft.mif.parser.parameter;
 
 
-import org.philhosoft.mif.parser.MifReader;
+import org.philhosoft.mif.parser.ParsingContext;
 
 
 public class ParameterTripletParser
 {
 	private int p1, p2, p3;
 
-	public ParameterTripletParser(String parameterExpression, MifReader reader)
+	public ParameterTripletParser(String parameterExpression, ParsingContext context)
 	{
 		if (!parameterExpression.startsWith("(") || !parameterExpression.endsWith(")"))
 		{
-			reader.addError("Invalid parameter syntax: no parentheses");
+			context.addError("Invalid parameter syntax: no parentheses");
 			return;
 		}
 		String[] parameters = parameterExpression.substring(1, parameterExpression.length() - 1).split(",\\s*");
 		if (parameters.length != 3)
 		{
-			reader.addError("Invalid parameter syntax: wrong number of parameters");
+			context.addError("Invalid parameter syntax: wrong number of parameters");
 			return;
 		}
 		try
@@ -27,7 +27,7 @@ public class ParameterTripletParser
 		}
 		catch (NumberFormatException e)
 		{
-			reader.addError("Invalid first parameter");
+			context.addError("Invalid first parameter");
 		}
 		try
 		{
@@ -35,7 +35,7 @@ public class ParameterTripletParser
 		}
 		catch (NumberFormatException e)
 		{
-			reader.addError("Invalid second parameter");
+			context.addError("Invalid second parameter");
 		}
 		try
 		{
@@ -43,7 +43,7 @@ public class ParameterTripletParser
 		}
 		catch (NumberFormatException e)
 		{
-			reader.addError("Invalid third parameter");
+			context.addError("Invalid third parameter");
 		}
 	}
 

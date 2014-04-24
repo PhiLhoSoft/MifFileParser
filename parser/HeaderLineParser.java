@@ -5,14 +5,14 @@ package org.philhosoft.mif.parser;
  */
 public class HeaderLineParser
 {
-	public String parse(String keyword, MifReader reader)
+	public String parse(String keyword, ParsingContext context)
 	{
-		String line = reader.getCurrentLine();
+		String line = context.getCurrentLine();
 		if (line != null && line.toUpperCase().startsWith(keyword))
 		{
 			return line.substring(keyword.length()).trim();
 		}
-		reader.pushBackLine();
+		context.pushBackLine();
 		return null;
 	}
 }
