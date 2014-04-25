@@ -18,11 +18,20 @@ public abstract class FourCoordinatesDataParser extends DefaultParser
 		if (line == null)
 			throw new IllegalStateException(); // Should not happen!
 
-		String parameter = line.substring(getKeyword().length() + 1);
+		String keyword = getKeyword();
+		String parameter;
+		if (keyword == null)
+		{
+			parameter = line; // Parameter stands on its own line
+		}
+		else
+		{
+			parameter = line.substring(keyword.length() + 1);
+		}
 		String[] coordinates = parameter.split("\\s+");
 		if (coordinates.length != 4)
 		{
-			context.addError("Invalid " + getKeyword() + ", must have 4 coordinates");
+			context.addError("Invalid " + (keyword == null ? "parameter" : keyword) + ", must have 4 coordinates");
 			return;
 		}
 

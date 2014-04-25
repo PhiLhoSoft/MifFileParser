@@ -22,6 +22,8 @@ public class HeaderParser
 {
 	private static final String[] HEADERS = { "DELIMITER", "UNIQUE", "INDEX", "COORDSYS", "TRANSFORM" };
 
+	private KeywordLineParser lineParser = new KeywordLineParser();
+
 	/**
 	 * Parses the header, leaving the context after the DATA line.
 	 *
@@ -30,7 +32,6 @@ public class HeaderParser
 	 */
 	public MifFileContent parse(ParsingContext context)
 	{
-		HeaderLineParser lineParser = new HeaderLineParser();
 		MifFileContent fc = new MifFileContent();
 		if (!context.readNextLine())
 		{

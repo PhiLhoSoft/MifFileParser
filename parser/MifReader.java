@@ -39,6 +39,6 @@ public class MifReader
 
 	public int getCurrentLineNumber()
 	{
-		return fileReader.getLineNumber() + 1;
+		return fileReader.getLineNumber();
 	}
 }

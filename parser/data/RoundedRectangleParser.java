@@ -34,7 +34,7 @@ public class RoundedRectangleParser extends FourCoordinatesDataParser implements
 	{
 		parseCoordinates(context);
 
-		RoundedRectangle mifRoundedRectangle = new RoundedRectangle(coordinates1, coordinates2);
+		RoundedRectangle roundedRectangle = new RoundedRectangle(coordinates1, coordinates2);
 
 		context.readNextLine();
 		String line = context.getCurrentLine();
@@ -47,25 +47,25 @@ public class RoundedRectangleParser extends FourCoordinatesDataParser implements
 		{
 			context.addError("Invalid rounded rectangle degree of rounding");
 		}
-		mifRoundedRectangle.setDegreeOfRounding(rounding);
+		roundedRectangle.setDegreeOfRounding(rounding);
 
-		while (context.readNextLine() && parseOption(mifRoundedRectangle, context))
+		while (context.readNextLine() && parseOption(roundedRectangle, context))
 		{}
 
-		return mifRoundedRectangle;
+		return roundedRectangle;
 	}
 
 	private boolean parseOption(RoundedRectangle mifRoundedRectangle, ParsingContext context)
 	{
 		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(context);
+			Pen pen = penParser.parseParameter(context);
 			mifRoundedRectangle.setPen(pen);
 			return true;
 		}
 		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(context);
+			Brush brush = brushParser.parseParameter(context);
 			mifRoundedRectangle.setBrush(brush);
 			return true;
 		}

@@ -31,24 +31,24 @@ public class RectangleParser extends FourCoordinatesDataParser implements MifDat
 	{
 		parseCoordinates(context);
 
-		Rectangle mifRectangle = new Rectangle(coordinates1, coordinates2);
-		while (context.readNextLine() && parseOption(mifRectangle, context))
+		Rectangle rectangle = new Rectangle(coordinates1, coordinates2);
+		while (context.readNextLine() && parseOption(rectangle, context))
 		{}
 
-		return mifRectangle;
+		return rectangle;
 	}
 
 	private boolean parseOption(Rectangle mifRectangle, ParsingContext context)
 	{
 		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(context);
+			Pen pen = penParser.parseParameter(context);
 			mifRectangle.setPen(pen);
 			return true;
 		}
 		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(context);
+			Brush brush = brushParser.parseParameter(context);
 			mifRectangle.setBrush(brush);
 			return true;
 		}

@@ -3,7 +3,7 @@ package org.philhosoft.mif.parser;
 /*
  KEYWORD someparameter
  */
-public class HeaderLineParser
+public class KeywordLineParser
 {
 	public String parse(String keyword, ParsingContext context)
 	{

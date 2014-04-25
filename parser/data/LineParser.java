@@ -27,14 +27,14 @@ public class LineParser extends FourCoordinatesDataParser implements MifDataPars
 	{
 		parseCoordinates(context);
 
-		Line mifLine = new Line(coordinates1, coordinates2);
+		Line line = new Line(coordinates1, coordinates2);
 		if (context.readNextLine())
 		{
 			PenParser parser = new PenParser();
 			if (parser.canParse(context))
 			{
-				Pen pen = (Pen) parser.parseParameter(context);
-				mifLine.setPen(pen);
+				Pen pen = parser.parseParameter(context);
+				line.setPen(pen);
 			}
 			else // It is optional
 			{
@@ -42,6 +42,6 @@ public class LineParser extends FourCoordinatesDataParser implements MifDataPars
 			}
 		}
 
-		return mifLine;
+		return line;
 	}
 }

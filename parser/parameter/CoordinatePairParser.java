@@ -2,7 +2,6 @@ package org.philhosoft.mif.parser.parameter;
 
 
 import org.philhosoft.mif.model.parameter.CoordinatePair;
-import org.philhosoft.mif.model.parameter.MifDataParameter;
 import org.philhosoft.mif.parser.ParsingContext;
 
 
@@ -17,14 +16,14 @@ public class CoordinatePairParser implements ParameterParser
 	@Override
 	public boolean canParse(ParsingContext context)
 	{
-		return context.getCurrentLine().contains(" ");
+		return context.getCurrentLine().contains(" ") || context.getCurrentLine().contains("\t");
 	}
 
 	/**
 	 * Reads two coordinates standing alone on their line.
 	 */
 	@Override
-	public MifDataParameter parseParameter(ParsingContext context)
+	public CoordinatePair parseParameter(ParsingContext context)
 	{
 		String line = context.getCurrentLine();
 		if (line == null)

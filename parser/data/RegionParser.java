@@ -46,7 +46,7 @@ public class RegionParser extends DefaultParser implements MifDataParser
 	@Override
 	public MifData parseData(ParsingContext context)
 	{
-		Region mifRegion = new Region();
+		Region region = new Region();
 
 		// Read data
 		String line = context.getCurrentLine();
@@ -62,22 +62,22 @@ public class RegionParser extends DefaultParser implements MifDataParser
 		catch (NumberFormatException e)
 		{
 			context.addError("Invalid number of polygons for " + getKeyword());
-			return mifRegion;
+			return region;
 		}
 
 		for (int i = 0; i < polygonNumber; i++)
 		{
-			readPolygon(mifRegion, context);
+			readPolygon(region, context);
 		}
 
 		// Read options
-		while (context.readNextLine() && parseOption(mifRegion, context))
+		while (context.readNextLine() && parseOption(region, context))
 		{}
 
-		return mifRegion;
+		return region;
 	}
 
-	private void readPolygon(Region mifRegion, ParsingContext context)
+	private void readPolygon(Region region, ParsingContext context)
 	{
 		context.readNextLine();
 		String line = context.getCurrentLine();
@@ -91,33 +91,33 @@ public class RegionParser extends DefaultParser implements MifDataParser
 			context.addError("Invalid number of coordinates for " + getKeyword());
 			return;
 		}
-		mifRegion.addPolygon();
+		region.addPolygon();
 		for (int i = 0; i < coordinateNb; i++)
 		{
 			context.readNextLine();
 			CoordinatePair coordinates = (CoordinatePair) coordinatesParser.parseParameter(context);
-			mifRegion.addCoordinates(coordinates);
+			region.addCoordinates(coordinates);
 		}
 	}
 
-	private boolean parseOption(Region mifRegion, ParsingContext context)
+	private boolean parseOption(Region region, ParsingContext context)
 	{
 		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(context);
-			mifRegion.setPen(pen);
+			Pen pen = penParser.parseParameter(context);
+			region.setPen(pen);
 			return true;
 		}
 		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(context);
-			mifRegion.setBrush(brush);
+			Brush brush = brushParser.parseParameter(context);
+			region.setBrush(brush);
 			return true;
 		}
 		if (centerParser.canParse(context))
 		{
-			CoordinatePair center = (CoordinatePair) centerParser.parseParameter(context);
-			mifRegion.setCenter(center);
+			CoordinatePair center = centerParser.parseParameter(context);
+			region.setCenter(center);
 			return true;
 		}
 		context.pushBackLine();

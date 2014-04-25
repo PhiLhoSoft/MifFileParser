@@ -41,6 +41,11 @@ public class ParsingContext
 		keepCurrentLine = true;
 	}
 
+	/**
+	 * Gets the current line in the reading context.
+	 *
+	 * @return the trimmed out line (without starting and ending spaces).
+	 */
 	public String getCurrentLine()
 	{
 		if (currentLine == null)
@@ -48,17 +53,32 @@ public class ParsingContext
 		return currentLine.trim();
 	}
 
+	/**
+	 * Adds a message to the message collector.
+	 *
+	 * @param message
+	 */
 	public void addMessage(Message message)
 	{
 		messages.add(message);
 	}
 
+	/**
+	 * Adds an error message (with the current line number) to the message collector.
+	 *
+	 * @param message
+	 */
 	public void addError(String message)
 	{
 		Message error = new Message(Message.Type.ERROR, reader.getCurrentLineNumber(), message);
 		addMessage(error);
 	}
 
+	/**
+	 * Adds a warning message (with the current line number) to the message collector.
+	 *
+	 * @param message
+	 */
 	public void addWarning(String message)
 	{
 		Message warning = new Message(Message.Type.WARNING, reader.getCurrentLineNumber(), message);
@@ -69,21 +89,4 @@ public class ParsingContext
 	{
 		return messages;
 	}
-
-/*
-	public void finish()
-	{
-		if (fileReader != null)
-		{
-			try
-			{
-				fileReader.close();
-			}
-			catch (IOException e)
-			{
-				messages.add(new Message(Message.Type.ERROR, 0, e.getMessage()));
-			}
-		}
-	}
-*/
 }

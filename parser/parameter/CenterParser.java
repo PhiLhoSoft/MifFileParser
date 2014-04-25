@@ -1,7 +1,7 @@
 package org.philhosoft.mif.parser.parameter;
 
 
-import org.philhosoft.mif.model.parameter.MifDataParameter;
+import org.philhosoft.mif.model.parameter.CoordinatePair;
 import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
 
@@ -17,7 +17,7 @@ public class CenterParser extends DefaultParser implements ParameterParser
 	}
 
 	@Override
-	public MifDataParameter parseParameter(ParsingContext context)
+	public CoordinatePair parseParameter(ParsingContext context)
 	{
 		String line = context.getCurrentLine();
 		if (line == null)

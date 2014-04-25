@@ -31,6 +31,7 @@ public class PointParser extends DefaultParser implements MifDataParser
 		String line = context.getCurrentLine();
 		if (line == null)
 			throw new IllegalStateException();
+
 		String parameter = line.substring(getKeyword().length() + 1);
 		String[] coordinates = parameter.split(" ");
 		if (coordinates.length != 2)
@@ -41,15 +42,15 @@ public class PointParser extends DefaultParser implements MifDataParser
 
 		CoordinatePair coordinatePair = CoordinatePairParser.parseCoordinates(coordinates[0], coordinates[1], context);
 
-		Point mifPoint = new Point(coordinatePair);
+		Point point = new Point(coordinatePair);
 		if (context.readNextLine())
 		{
 			line = context.getCurrentLine();
 			SymbolParser parser = new SymbolParser();
 			if (parser.canParse(context))
 			{
-				Symbol symbol = (Symbol) parser.parseParameter(context);
-				mifPoint.setSymbol(symbol);
+				Symbol symbol = parser.parseParameter(context);
+				point.setSymbol(symbol);
 			}
 			else
 			{
@@ -57,6 +58,6 @@ public class PointParser extends DefaultParser implements MifDataParser
 			}
 		}
 
-		return mifPoint;
+		return point;
 	}
 }

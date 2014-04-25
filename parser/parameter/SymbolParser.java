@@ -1,7 +1,6 @@
 package org.philhosoft.mif.parser.parameter;
 
 
-import org.philhosoft.mif.model.parameter.MifDataParameter;
 import org.philhosoft.mif.model.parameter.Symbol;
 import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
@@ -18,7 +17,7 @@ public class SymbolParser extends DefaultParser implements ParameterParser
 	}
 
 	@Override
-	public MifDataParameter parseParameter(ParsingContext context)
+	public Symbol parseParameter(ParsingContext context)
 	{
 		String line = context.getCurrentLine();
 		if (line == null)

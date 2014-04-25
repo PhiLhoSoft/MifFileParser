@@ -33,24 +33,24 @@ public class EllipseParser extends FourCoordinatesDataParser implements MifDataP
 	{
 		parseCoordinates(context);
 
-		Ellipse mifEllipse = new Ellipse(coordinates1, coordinates2);
-		while (context.readNextLine() && parseOption(mifEllipse, context))
+		Ellipse ellipse = new Ellipse(coordinates1, coordinates2);
+		while (context.readNextLine() && parseOption(ellipse, context))
 		{}
 
-		return mifEllipse;
+		return ellipse;
 	}
 
 	private boolean parseOption(Ellipse mifEllipse, ParsingContext context)
 	{
 		if (penParser.canParse(context))
 		{
-			Pen pen = (Pen) penParser.parseParameter(context);
+			Pen pen = penParser.parseParameter(context);
 			mifEllipse.setPen(pen);
 			return true;
 		}
 		if (brushParser.canParse(context))
 		{
-			Brush brush = (Brush) brushParser.parseParameter(context);
+			Brush brush = brushParser.parseParameter(context);
 			mifEllipse.setBrush(brush);
 			return true;
 		}

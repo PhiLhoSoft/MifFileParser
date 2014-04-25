@@ -6,9 +6,9 @@ import java.nio.charset.Charset;
 
 import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.model.data.Arc;
-import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.data.Ellipse;
 import org.philhosoft.mif.model.data.Line;
+import org.philhosoft.mif.model.data.MifData;
 import org.philhosoft.mif.model.data.None;
 import org.philhosoft.mif.model.data.Point;
 import org.philhosoft.mif.model.data.Polyline;
@@ -47,7 +47,7 @@ public class ExportToMif
 
 		// TODO write header
 
-		ToMifVisitor visitor = new ToMifVisitor();
+		DataToMifVisitor visitor = new DataToMifVisitor();
 		for (MifData data : fileContent.getMifData())
 		{
 			if (!data.accept(visitor, this))
@@ -57,21 +57,43 @@ public class ExportToMif
 		}
 	}
 
-	public void write(String line) throws IOException
+	public void write(String... lineParts) throws IOException
 	{
-		line += "\n";
-		output.write(line.getBytes(charset));
+		boolean first = true;
+		for (String linePart : lineParts)
+		{
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				output.write(' '); // Space separator
+			}
+			output.write(linePart.getBytes(charset));
+		}
+		output.write('\n');
 	}
 }
 
-class ToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
+class DataToMifVisitor implements MifData.Visitor<ExportToMif, Boolean>
 {
+	static String dts(double d)
+	{
+		if (Math.floor(d) == d)
+			return Integer.toString((int) d);
+		return Double.toString(d);
+	}
+
 	@Override
 	public Boolean visit(Arc data, ExportToMif exporter)
 	{
 		try
 		{
-			exporter.write(ArcParser.KEYWORD);
+			exporter.write(ArcParser.KEYWORD,
+					dts(data.getCorner1().getX()), dts(data.getCorner1().getY()),
+					dts(data.getCorner2().getX()), dts(data.getCorner2().getY()));
+			exporter.write(dts(data.getStartAngle()), dts(data.getEndAngle()));
 		}
 		catch (IOException e)
 		{
