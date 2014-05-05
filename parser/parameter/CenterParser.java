@@ -6,6 +6,7 @@ import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
 
 
+/* CENTER x y */
 public class CenterParser extends DefaultParser implements ParameterParser
 {
 	public static final String KEYWORD = "CENTER";

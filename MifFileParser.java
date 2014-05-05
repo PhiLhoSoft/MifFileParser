@@ -20,7 +20,7 @@ public class MifFileParser
 {
 	public static final String DEFAULT_CHARTSET = "UTF-8";
 
-	public static void main(String[] args) throws FileNotFoundException, IOException
+	public static void main(String[] args) throws FileNotFoundException, IOException, Exception
 	{
 		File mifFile = new File("C:/Test/Simple.mif"); // TODO read command line options!
 		InputStream is = new FileInputStream(mifFile);
@@ -60,7 +60,7 @@ public class MifFileParser
 		}
 
 		OutputStream output = new FileOutputStream(new File("C:/Test/SimpleParsed.mif"));
-		exporter.export(output , charset);
+		exporter.export(output, charset);
 
 		System.out.println(collector);
 	}

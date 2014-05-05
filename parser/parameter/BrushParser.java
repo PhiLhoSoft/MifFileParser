@@ -6,6 +6,7 @@ import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
 
 
+/* BRUSH (pattern, forecolor, backcolor) */
 public class BrushParser extends DefaultParser implements ParameterParser
 {
 	public static final String KEYWORD = "BRUSH";

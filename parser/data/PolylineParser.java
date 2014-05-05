@@ -27,6 +27,8 @@ import org.philhosoft.mif.parser.parameter.PenParser;
 public class PolylineParser extends DefaultParser implements MifDataParser
 {
 	public static final String KEYWORD = "PLINE";
+	public static final String PARAMETER_MULTIPLE = "MULTIPLE";
+	public static final String PARAMETER_SMOOTH = "SMOOTH";
 
 	private CoordinatePairParser coordinatesParser = new CoordinatePairParser();
 	private PenParser penParser = new PenParser();
@@ -51,7 +53,7 @@ public class PolylineParser extends DefaultParser implements MifDataParser
 		{
 			String parameter = line.substring(getKeyword().length() + 1).trim();
 			String[] parts = parameter.split("\\s+");
-			if (parts.length == 2 && parts[0].equals("MULTIPLE"))
+			if (parts.length == 2 && parts[0].equals(PARAMETER_MULTIPLE))
 			{
 				try
 				{
@@ -107,7 +109,7 @@ public class PolylineParser extends DefaultParser implements MifDataParser
 			polyligne.setPen(pen);
 			return true;
 		}
-		if (context.getCurrentLine().equals("SMOOTH"))
+		if (context.getCurrentLine().equals(PARAMETER_SMOOTH))
 		{
 			polyligne.setSmooth(true);
 			return true;

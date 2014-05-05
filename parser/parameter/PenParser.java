@@ -6,6 +6,7 @@ import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
 
 
+/* PEN (width, pattern, color) */
 public class PenParser extends DefaultParser implements ParameterParser
 {
 	public static final String KEYWORD = "PEN";

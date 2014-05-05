@@ -1,5 +1,6 @@
 package org.philhosoft.mif.model.parameter;
 
+
 /** Symbol used to display a point. */
 public class Symbol implements MifDataParameter
 {
@@ -18,25 +19,32 @@ public class Symbol implements MifDataParameter
 	{
 		return shape;
 	}
-	public void setShape(int shape)
-	{
-		this.shape = shape;
-	}
 	public int getColor()
 	{
 		return color;
-	}
-	public void setColor(int color)
-	{
-		this.color = color;
 	}
 	public int getSize()
 	{
 		return size;
 	}
+
+	public void setShape(int shape)
+	{
+		this.shape = shape;
+	}
+	public void setColor(int color)
+	{
+		this.color = color;
+	}
 	public void setSize(int size)
 	{
 		this.size = size;
+	}
+
+	@Override
+	public <IN, OUT> OUT accept(Visitor<IN, OUT> visitor, IN in) throws Exception
+	{
+		return visitor.visit(this, in);
 	}
 }
 

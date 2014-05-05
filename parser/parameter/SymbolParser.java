@@ -6,6 +6,7 @@ import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
 
 
+/* SYMBOL (shape, color, size) */
 public class SymbolParser extends DefaultParser implements ParameterParser
 {
 	public static final String KEYWORD = "SYMBOL";
