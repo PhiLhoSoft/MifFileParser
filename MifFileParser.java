@@ -53,6 +53,7 @@ public class MifFileParser
 		exportToJson(fileContent, documentName);
 
 		System.out.println(collector);
+		System.out.println("Done");
 	}
 
 	private static void exportToMif(MifFileContent fileContent) throws FileNotFoundException, Exception

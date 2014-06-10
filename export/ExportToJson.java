@@ -20,11 +20,15 @@ import org.philhosoft.mif.model.data.Region;
 import org.philhosoft.mif.model.data.RoundedRectangle;
 import org.philhosoft.mif.model.data.Text;
 import org.philhosoft.mif.model.parameter.CoordinatePair;
+import org.philhosoft.mif.parser.data.ArcParser;
+import org.philhosoft.mif.parser.data.EllipseParser;
 import org.philhosoft.mif.parser.data.LineParser;
+import org.philhosoft.mif.parser.data.PointParser;
 import org.philhosoft.mif.parser.data.PolylineParser;
 import org.philhosoft.mif.parser.data.RectangleParser;
 import org.philhosoft.mif.parser.data.RegionParser;
 import org.philhosoft.mif.parser.data.RoundedRectangleParser;
+import org.philhosoft.mif.parser.data.TextParser;
 
 
 /**
@@ -68,12 +72,10 @@ public class ExportToJson
 		List<MifData> paths = new ArrayList<>();
 		List<MifData> mapLines = new ArrayList<>();
 
-		DataDispatchVisitor dispatchVisitor = new DataDispatchVisitor();
-
 		// Dispatch information between regions (areas of interest) and cosmetic (lines to improve maps)
 		for (MifData data : fileContent.getMifData())
 		{
-			if (data.accept(dispatchVisitor, null))
+			if (data instanceof Region) // Could use another visitor, but that's the only data we want there
 			{
 				paths.add(data);
 			}
@@ -87,37 +89,41 @@ public class ExportToJson
 
 		write("{\n");
 		write("  \"name\":", "\"" + documentName + "\",\n");
-		write("  \"paths\":\n  [\n");
-
+		if (!paths.isEmpty())
 		{
-			int last = paths.size();
-			int count = 0;
+			write("  \"paths\":\n  [\n");
+
+			boolean first = true;
 			for (MifData data : paths)
 			{
-				data.accept(jsonVisitor, this);
-				if (count++ < last - 1)
+				if (!first)
 				{
 					write(",\n");
 				}
+				data.accept(jsonVisitor, this);
+				first = false;
 			}
-		}
 
-		write("\n  ]");
+			write("\n  ]");
+		}
 
 		if (!mapLines.isEmpty())
 		{
-			write(",\n");
+			if (!paths.isEmpty())
+			{
+				write(",\n");
+			}
 			write("  \"mapLines\":\n  [\n");
 
-			int last = mapLines.size();
-			int count = 0;
+			boolean first = true;
 			for (MifData data : mapLines)
 			{
-				data.accept(jsonVisitor, this);
-				if (count++ < last - 1)
+				if (!first)
 				{
 					write(",\n");
 				}
+				data.accept(jsonVisitor, this);
+				first = false;
 			}
 
 			write("\n  ]");
@@ -168,7 +174,7 @@ public class ExportToJson
 	{
 		write("    {\n");
 		write("      \"id\":", "\"" + id + "\",\n");
-		write("      \"path\": \"M " + path + (close ? "Z" : "") + "\"\n");
+		write("      \"path\": \"M" + path + (close ? " Z" : "") + "\"\n");
 		write("    }");
 	}
 
@@ -177,72 +183,6 @@ public class ExportToJson
 	{
 		if (Math.floor(d) == d) return Integer.toString((int) d);
 		return Double.toString(d);
-	}
-
-	/**
-	 * Returns true if the class must be exported in "paths", false if it must go to "mapLines" (cosmetic).
-	 */
-	private static class DataDispatchVisitor implements MifData.Visitor<Void, Boolean>
-	{
-		@Override
-		public Boolean visit(Arc data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(Ellipse data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(Line data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(None data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(Point data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(Polyline data, Void in) throws Exception
-		{
-			return true;
-		}
-
-		@Override
-		public Boolean visit(Rectangle data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(Region data, Void in) throws Exception
-		{
-			return true;
-		}
-
-		@Override
-		public Boolean visit(RoundedRectangle data, Void in) throws Exception
-		{
-			return false;
-		}
-
-		@Override
-		public Boolean visit(Text data, Void in) throws Exception
-		{
-			return false;
-		}
 	}
 
 	private static class DataToJsonVisitor implements MifData.Visitor<ExportToJson, Void>
@@ -254,10 +194,20 @@ public class ExportToJson
 			StringBuilder path = new StringBuilder();
 			for (CoordinatePair cp : polygon)
 			{
-				path.append(dts(cp.getX())).append(',').append(dts(cp.getY())).append(' ');
+				path.append(' ').append(dts(cp.getX())).append(',').append(dts(cp.getY()));
 			}
 			exporter.writePolygon(id, path.toString(), close);
-//			exporter.writeNewline();
+		}
+		private void writeEmpty(String id, CoordinatePair point, ExportToJson exporter) throws IOException
+		{
+			if (point == null)
+			{
+				exporter.writePolygon(id, " 0,0", false);
+			}
+			else
+			{
+				exporter.writePolygon(id, " " + dts(point.getX()) + "," + dts(point.getY()), false);
+			}
 		}
 
 		private String makeId(String prefix)
@@ -268,12 +218,14 @@ public class ExportToJson
 		@Override
 		public Void visit(Arc data, ExportToJson exporter) throws Exception
 		{
+			writeEmpty(makeId(ArcParser.KEYWORD), data.getCorner1(), exporter); // Not supported yet
 			return null;
 		}
 
 		@Override
 		public Void visit(Ellipse data, ExportToJson exporter) throws Exception
 		{
+			writeEmpty(makeId(EllipseParser.KEYWORD), data.getCorner1(), exporter); // Not supported yet
 			return null;
 		}
 
@@ -290,21 +242,29 @@ public class ExportToJson
 		@Override
 		public Void visit(None data, ExportToJson exporter) throws Exception
 		{
+			writeEmpty(makeId("None"), null, exporter); // Not supported
 			return null;
 		}
 
 		@Override
 		public Void visit(Point data, ExportToJson exporter) throws Exception
 		{
+			writeEmpty(makeId(PointParser.KEYWORD), data.getLocation(), exporter); // Not supported yet
 			return null;
 		}
 
 		@Override
 		public Void visit(Polyline data, ExportToJson exporter) throws Exception
 		{
+			int last = data.getSections().size();
+			int count = 0;
 			for (List<CoordinatePair> section : data.getSections())
 			{
 				writePolygon(makeId(PolylineParser.KEYWORD), section, false, exporter); // Not closed
+				if (count++ < last - 1)
+				{
+					exporter.write(",\n");
+				}
 			}
 			return null;
 		}
@@ -325,9 +285,15 @@ public class ExportToJson
 		@Override
 		public Void visit(Region data, ExportToJson exporter) throws Exception
 		{
+			int last = data.getPolygons().size();
+			int count = 0;
 			for (List<CoordinatePair> polygon : data.getPolygons())
 			{
 				writePolygon(makeId(RegionParser.KEYWORD), polygon, true, exporter); // Closed
+				if (count++ < last - 1)
+				{
+					exporter.write(",\n");
+				}
 			}
 			return null;
 		}
@@ -348,6 +314,7 @@ public class ExportToJson
 		@Override
 		public Void visit(Text data, ExportToJson exporter) throws Exception
 		{
+			writeEmpty(makeId(TextParser.KEYWORD), data.getCorner1(), exporter); // Not supported yet
 			return null;
 		}
 	}
