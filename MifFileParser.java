@@ -23,7 +23,18 @@ public class MifFileParser
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, Exception
 	{
-		File mifFile = new File("C:/Test/Simple.mif"); // TODO read command line options!
+		MifFileParser parser = new MifFileParser();
+		if (args.length == 0)
+		{
+			System.out.println("Usage: java " + parser.getClass().getName() + " fileToParse");
+			return;
+		}
+		parser.process(args[0]);
+	}
+
+	private void process(String fileName) throws FileNotFoundException, IOException, Exception
+	{
+		File mifFile = new File(fileName);
 		InputStream is = new FileInputStream(mifFile);
 		MifReader reader = new MifReader(is);
 		ParsingContext context = new ParsingContext(reader);
@@ -45,18 +56,25 @@ public class MifFileParser
 		{
 			System.err.println("Found errors");
 			System.err.println(collector);
-			return;
+			return; // Cannot export if we have errors
 		}
-
-		exportToMif(fileContent);
-		String documentName = mifFile.getName();
-		exportToJson(fileContent, documentName);
-
+		// Show warnings
 		System.out.println(collector);
+
+		doExports(mifFile, fileContent);
+
 		System.out.println("Done");
 	}
 
-	private static void exportToMif(MifFileContent fileContent) throws FileNotFoundException, Exception
+	private void doExports(File mifFile, MifFileContent fileContent) throws FileNotFoundException, Exception
+	{
+		String documentName = mifFile.getName();
+		String documentPath = mifFile.getAbsolutePath();
+		exportToMif(fileContent, documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.mif"));
+		exportToJson(fileContent, documentName, documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.json"));
+	}
+
+	private static void exportToMif(MifFileContent fileContent, String outputPath) throws FileNotFoundException, Exception
 	{
 		ExportToMif exporter = new ExportToMif(fileContent);
 
@@ -70,11 +88,11 @@ public class MifFileParser
 			charset = Charset.forName(DEFAULT_CHARTSET);
 		}
 
-		OutputStream output = new FileOutputStream(new File("C:/Test/SimpleParsed.mif"));
+		OutputStream output = new FileOutputStream(new File(outputPath));
 		exporter.export(output, charset);
 	}
 
-	private static void exportToJson(MifFileContent fileContent, String documentName) throws FileNotFoundException, Exception
+	private static void exportToJson(MifFileContent fileContent, String documentName, String outputPath) throws FileNotFoundException, Exception
 	{
 		ExportToJson exporter = new ExportToJson(fileContent, documentName);
 
@@ -88,7 +106,7 @@ public class MifFileParser
 			charset = Charset.forName(DEFAULT_CHARTSET);
 		}
 
-		OutputStream output = new FileOutputStream(new File("C:/Test/SimpleParsed.json"));
+		OutputStream output = new FileOutputStream(new File(outputPath));
 		exporter.export(output, charset);
 	}
 }

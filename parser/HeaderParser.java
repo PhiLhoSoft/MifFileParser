@@ -51,12 +51,17 @@ public class HeaderParser
 		fc.setCharset(lineParser.parse(HEADER_CHARSET, context));
 
 		// Tries to parse each kind of optional header
-		int i = 0;
 		boolean successful = true;
-		while (context.readNextLine() && successful)
+		while (successful && context.readNextLine())
 		{
-			String value = lineParser.parse(HEADERS[i++], context);
-			successful = value != null;
+			int i = 0;
+			for (; i < HEADERS.length; i++)
+			{
+				String value = lineParser.parse(HEADERS[i], context);
+				if (value != null)
+					break;
+			}
+			successful = i < HEADERS.length;
 		}
 
 		String columnNbParam = lineParser.parse(HEADER_COLUMNS, context);
@@ -85,7 +90,7 @@ public class HeaderParser
 
 		context.readNextLine();
 		String data = context.getCurrentLine();
-		if (!data.equals(HEADER_DATA))
+		if (!data.toUpperCase().equals(HEADER_DATA))
 		{
 			context.addError("No " + HEADER_DATA + " line found");
 			return fc;

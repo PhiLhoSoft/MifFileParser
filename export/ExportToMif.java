@@ -284,7 +284,7 @@ public class ExportToMif
 		/** Write a parameter name and its triplet of integer parameters. */
 		private void write(ExportToMif exporter, String keyword, int p1, int p2, int p3) throws IOException
 		{
-			exporter.write(keyword, " (" + dts(p1) + ", " + dts(p2) + ", " + dts(p3) + ")");
+			exporter.write("   ", keyword, " (" + dts(p1) + ", " + dts(p2) + ", " + dts(p3) + ")");
 			exporter.writeNewline();
 		}
 

@@ -45,12 +45,17 @@ public class MifFileContentParser
 
 		while (context.readNextLine())
 		{
+			if (context.getCurrentLine().trim().isEmpty())
+				continue;
 			boolean parsed = false;
 			for (MifDataParser parser : parsers)
 			{
 				if (parser.canParse(context))
 				{
 					MifData data = parser.parseData(context);
+					if (data == null)
+						return fileContent; // Error. Give a partial content?
+
 					fileContent.add(data);
 					parsed = true;
 					break;

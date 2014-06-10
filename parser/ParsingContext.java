@@ -7,6 +7,9 @@ package org.philhosoft.mif.parser;
  */
 public class ParsingContext
 {
+	// Avoid flooding. Perhaps allow to configure it.
+	private static final int MAX_NUMBER_OF_MESSAGES = 100;
+
 	private final MifReader reader;
 	private final MessageCollector messages = new MessageCollector();
 	private String currentLine;
@@ -61,6 +64,10 @@ public class ParsingContext
 	public void addMessage(Message message)
 	{
 		messages.add(message);
+		if (messages.getMessages().size() >= MAX_NUMBER_OF_MESSAGES)
+		{
+			throw new RuntimeException("Reached " + MAX_NUMBER_OF_MESSAGES + " messages, stopping.");
+		}
 	}
 
 	/**

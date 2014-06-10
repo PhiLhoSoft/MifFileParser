@@ -53,7 +53,12 @@ public class RegionParser extends DefaultParser implements MifDataParser
 		if (line == null)
 			throw new IllegalStateException();
 
-		String parameter = line.substring(getKeyword().length() + 1);
+		if (line.length() < getKeyword().length() + 2)
+		{
+			context.addError("No number of polygons for " + getKeyword());
+			return null;
+		}
+		String parameter = line.substring(getKeyword().length() + 1).trim();
 		int polygonNumber = 0;
 		try
 		{
@@ -62,7 +67,7 @@ public class RegionParser extends DefaultParser implements MifDataParser
 		catch (NumberFormatException e)
 		{
 			context.addError("Invalid number of polygons for " + getKeyword());
-			return region;
+			return null;
 		}
 
 		for (int i = 0; i < polygonNumber; i++)

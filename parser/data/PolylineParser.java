@@ -62,6 +62,7 @@ public class PolylineParser extends DefaultParser implements MifDataParser
 				catch (NumberFormatException e)
 				{
 					context.addError("Invalid number of sections for " + getKeyword());
+					return null;
 				}
 			}
 		}

@@ -12,7 +12,6 @@ public class KeywordLineParser
 		{
 			return line.substring(keyword.length()).trim();
 		}
-		context.pushBackLine();
 		return null;
 	}
 }
