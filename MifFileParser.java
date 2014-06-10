@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import org.philhosoft.mif.export.ExportToJson;
 import org.philhosoft.mif.export.ExportToMif;
 import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.parser.MessageCollector;
@@ -47,6 +48,15 @@ public class MifFileParser
 			return;
 		}
 
+		exportToMif(fileContent);
+		String documentName = mifFile.getName();
+		exportToJson(fileContent, documentName);
+
+		System.out.println(collector);
+	}
+
+	private static void exportToMif(MifFileContent fileContent) throws FileNotFoundException, Exception
+	{
 		ExportToMif exporter = new ExportToMif(fileContent);
 
 		Charset charset;
@@ -61,7 +71,23 @@ public class MifFileParser
 
 		OutputStream output = new FileOutputStream(new File("C:/Test/SimpleParsed.mif"));
 		exporter.export(output, charset);
+	}
 
-		System.out.println(collector);
+	private static void exportToJson(MifFileContent fileContent, String documentName) throws FileNotFoundException, Exception
+	{
+		ExportToJson exporter = new ExportToJson(fileContent, documentName);
+
+		Charset charset;
+		try
+		{
+			charset = Charset.forName(fileContent.getCharset() != null ? fileContent.getCharset() : DEFAULT_CHARTSET);
+		}
+		catch (RuntimeException e)
+		{
+			charset = Charset.forName(DEFAULT_CHARTSET);
+		}
+
+		OutputStream output = new FileOutputStream(new File("C:/Test/SimpleParsed.json"));
+		exporter.export(output, charset);
 	}
 }
