@@ -45,6 +45,10 @@ public class MifFileParser
 		{
 			fileContent = parser.parseContent(context);
 		}
+		catch (RuntimeException e)
+		{
+			System.err.println(e.getMessage());
+		}
 		finally
 		{
 			is.close();

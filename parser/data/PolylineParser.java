@@ -64,12 +64,18 @@ public class PolylineParser extends DefaultParser implements MifDataParser
 					context.addError("Invalid number of sections for " + getKeyword());
 					return null;
 				}
-			}
-		}
 
-		for (int i = 0; i < sectionNumber; i++)
-		{
-			readSection(polyline, context);
+				for (int i = 0; i < sectionNumber; i++)
+				{
+					context.readNextLine();
+					line = context.getCurrentLine();
+					readSection(line, polyline, context);
+				}
+			}
+			else if (parts.length == 1) // Found a "PLine 36" declaration where the number is the numpts value
+			{
+				readSection(parts[0], polyline, context);
+			}
 		}
 
 		// Read options
@@ -79,10 +85,8 @@ public class PolylineParser extends DefaultParser implements MifDataParser
 		return polyline;
 	}
 
-	private void readSection(Polyline polyline, ParsingContext context)
+	private void readSection(String line, Polyline polyline, ParsingContext context)
 	{
-		context.readNextLine();
-		String line = context.getCurrentLine();
 		int coordinateNb = 0;
 		try
 		{
