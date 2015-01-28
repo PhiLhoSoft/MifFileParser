@@ -19,7 +19,7 @@ import org.philhosoft.mif.parser.ParsingContext;
 
 public class MifFileParser
 {
-	public static final String DEFAULT_CHARTSET = "UTF-8";
+	public static final String DEFAULT_CHARSET = "UTF-8";
 
 	public static void main(String[] args) throws FileNotFoundException, IOException, Exception
 	{
@@ -85,11 +85,11 @@ public class MifFileParser
 		Charset charset;
 		try
 		{
-			charset = Charset.forName(fileContent.getCharset() != null ? fileContent.getCharset() : DEFAULT_CHARTSET);
+			charset = Charset.forName(fileContent.getCharset() != null ? fileContent.getCharset() : DEFAULT_CHARSET);
 		}
 		catch (RuntimeException e)
 		{
-			charset = Charset.forName(DEFAULT_CHARTSET);
+			charset = Charset.forName(DEFAULT_CHARSET);
 		}
 
 		OutputStream output = new FileOutputStream(new File(outputPath));
@@ -103,11 +103,11 @@ public class MifFileParser
 		Charset charset;
 		try
 		{
-			charset = Charset.forName(fileContent.getCharset() != null ? fileContent.getCharset() : DEFAULT_CHARTSET);
+			charset = Charset.forName(fileContent.getCharset() != null ? fileContent.getCharset() : DEFAULT_CHARSET);
 		}
 		catch (RuntimeException e)
 		{
-			charset = Charset.forName(DEFAULT_CHARTSET);
+			charset = Charset.forName(DEFAULT_CHARSET);
 		}
 
 		OutputStream output = new FileOutputStream(new File(outputPath));
