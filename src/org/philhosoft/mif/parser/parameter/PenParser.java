@@ -25,8 +25,13 @@ public class PenParser extends DefaultParser implements ParameterParser
 			throw new IllegalStateException(); // Should not happen!
 
 		String parameter = line.substring(getKeyword().length() + 1);
-		ParameterTripletParser triplet = new ParameterTripletParser(parameter, context);
+		ParenthesizedParameterParser triplet = new ParenthesizedParameterParser(parameter, context);
+		if (triplet.getParameterNumber() != 3)
+		{
+			context.addError("Wrong number of parameters for " + KEYWORD);
+			return new Pen(0, 0, 0);
+		}
 
-		return new Pen(triplet.getParameter1(), triplet.getParameter2(), triplet.getParameter3());
+		return new Pen(triplet.getIntParameter(0), triplet.getIntParameter(1), triplet.getIntParameter(2));
 	}
 }

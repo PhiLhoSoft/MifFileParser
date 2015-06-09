@@ -25,8 +25,20 @@ public class SymbolParser extends DefaultParser implements ParameterParser
 			throw new IllegalStateException();
 
 		String parameter = line.substring(getKeyword().length() + 1);
-		ParameterTripletParser triplet = new ParameterTripletParser(parameter, context);
-
-		return new Symbol(triplet.getParameter1(), triplet.getParameter2(), triplet.getParameter3());
+		ParenthesizedParameterParser parameters = new ParenthesizedParameterParser(parameter, context);
+		if (parameters.getParameterNumber() == 3)
+		{
+			return new Symbol(parameters.getIntParameter(0), parameters.getIntParameter(1), parameters.getIntParameter(2));
+		}
+		else if (parameters.getParameterNumber() == 6)
+		{
+			return new Symbol(parameters.getIntParameter(0), parameters.getIntParameter(1), parameters.getIntParameter(2),
+					parameters.getParameter(3), parameters.getIntParameter(4), parameters.getIntParameter(5));
+		}
+		else
+		{
+			context.addError("Wrong number of parameters for " + KEYWORD);
+			return new Symbol(0, 0, 0);
+		}
 	}
 }

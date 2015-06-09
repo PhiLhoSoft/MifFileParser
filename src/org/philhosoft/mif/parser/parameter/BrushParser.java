@@ -25,8 +25,13 @@ public class BrushParser extends DefaultParser implements ParameterParser
 			throw new IllegalStateException();
 
 		String parameter = line.substring(getKeyword().length() + 1);
-		ParameterTripletParser triplet = new ParameterTripletParser(parameter, context);
+		ParenthesizedParameterParser triplet = new ParenthesizedParameterParser(parameter, context);
+		if (triplet.getParameterNumber() != 3)
+		{
+			context.addError("Wrong number of parameters for " + KEYWORD);
+			return new Brush(0, 0, 0);
+		}
 
-		return new Brush(triplet.getParameter1(), triplet.getParameter2(), triplet.getParameter3());
+		return new Brush(triplet.getIntParameter(0), triplet.getIntParameter(1), triplet.getIntParameter(2));
 	}
 }

@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.assertj.core.util.Strings;
+
 import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.model.data.Arc;
 import org.philhosoft.mif.model.data.Ellipse;
@@ -287,6 +289,11 @@ public class ExportToMif
 			exporter.write("   ", keyword, " (" + dts(p1) + ", " + dts(p2) + ", " + dts(p3) + ")");
 			exporter.writeNewline();
 		}
+		private void write(ExportToMif exporter, String keyword, int p1, int p2, int p3, String p4, int p5, int p6) throws IOException
+		{
+			exporter.write("   ", keyword, " (" + dts(p1) + ", " + dts(p2) + ", " + dts(p3) + ", " + p4 + ", " + dts(p5) + ", " + dts(p6) + ")");
+			exporter.writeNewline();
+		}
 
 		/** No newline on this one, to allow displaying two pairs on the same line. */
 		@Override
@@ -313,7 +320,15 @@ public class ExportToMif
 		@Override
 		public Void visit(Symbol parameter, ExportToMif exporter) throws Exception
 		{
-			write(exporter, SymbolParser.KEYWORD, parameter.getShape(), parameter.getColor(), parameter.getSize());
+			if (parameter.getFontName().isEmpty())
+			{
+				write(exporter, SymbolParser.KEYWORD, parameter.getShape(), parameter.getColor(), parameter.getSize());
+			}
+			else
+			{
+				write(exporter, SymbolParser.KEYWORD, parameter.getShape(), parameter.getColor(), parameter.getSize(),
+						parameter.getFontName(), parameter.getFontStyle(), parameter.getRotation());
+			}
 			return null;
 		}
 	}
