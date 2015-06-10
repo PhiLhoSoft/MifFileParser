@@ -15,14 +15,19 @@ public class Pen implements MifDataParameter
 		this.color = color;
 	}
 
+	/** 0 to 7 pixels. 0 is not visible (must have pattern 1),.
+	 * If in the 11-2047 range, width is in points.
+	 */
 	public int getWidth()
 	{
 		return width;
 	}
+	/** 1 to 118. 1 is invisible. Can go up to 255 if interleaved. */
 	public int getPattern()
 	{
 		return pattern;
 	}
+	/** 24-bit RGB color value. */
 	public int getColor()
 	{
 		return color;

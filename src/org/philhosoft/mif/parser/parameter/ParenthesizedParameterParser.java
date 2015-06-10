@@ -36,7 +36,19 @@ public class ParenthesizedParameterParser
 		}
 		catch (NumberFormatException e)
 		{
-			context.addError("Invalid parameter #" + i);
+			context.addError("Invalid parameter #" + i + ": not an integer");
+		}
+		return 0;
+	}
+	public float getFloatParameter(int i)
+	{
+		try
+		{
+			return Float.parseFloat(parameters[i]);
+		}
+		catch (NumberFormatException e)
+		{
+			context.addError("Invalid parameter #" + i + ": not a float");
 		}
 		return 0;
 	}

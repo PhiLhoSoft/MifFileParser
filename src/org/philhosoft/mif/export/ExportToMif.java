@@ -6,8 +6,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.assertj.core.util.Strings;
-
 import org.philhosoft.mif.model.MifFileContent;
 import org.philhosoft.mif.model.data.Arc;
 import org.philhosoft.mif.model.data.Ellipse;
@@ -289,7 +287,12 @@ public class ExportToMif
 			exporter.write("   ", keyword, " (" + dts(p1) + ", " + dts(p2) + ", " + dts(p3) + ")");
 			exporter.writeNewline();
 		}
-		private void write(ExportToMif exporter, String keyword, int p1, int p2, int p3, String p4, int p5, int p6) throws IOException
+		private void write(ExportToMif exporter, String keyword, int p1, int p2) throws IOException
+		{
+			exporter.write("   ", keyword, " (" + dts(p1) + ", " + dts(p2) + ")");
+			exporter.writeNewline();
+		}
+		private void write(ExportToMif exporter, String keyword, int p1, int p2, int p3, String p4, int p5, float p6) throws IOException
 		{
 			exporter.write("   ", keyword, " (" + dts(p1) + ", " + dts(p2) + ", " + dts(p3) + ", " + p4 + ", " + dts(p5) + ", " + dts(p6) + ")");
 			exporter.writeNewline();
@@ -306,7 +309,14 @@ public class ExportToMif
 		@Override
 		public Void visit(Brush parameter, ExportToMif exporter) throws Exception
 		{
-			write(exporter, BrushParser.KEYWORD, parameter.getPattern(), parameter.getForeColor(), parameter.getBackColor());
+			if (parameter.getBackColor() == null)
+			{
+				write(exporter, BrushParser.KEYWORD, parameter.getPattern(), parameter.getForeColor());
+			}
+			else
+			{
+				write(exporter, BrushParser.KEYWORD, parameter.getPattern(), parameter.getForeColor(), parameter.getBackColor());
+			}
 			return null;
 		}
 

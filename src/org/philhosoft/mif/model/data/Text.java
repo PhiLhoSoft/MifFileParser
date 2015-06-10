@@ -11,7 +11,7 @@ public class Text implements MifData
 	private Justify justify;
 	private double angle;
 
-	public enum Spacing { SIMPLE, SPACED, DOUBLE };
+	public enum Spacing { SIMPLE, SPACED, DOUBLE }; // 1.0, 1.5 or 2.0
 	public enum Justify { LEFT, CENTER, RIGHT }
 
 	public Text(String text)
@@ -19,6 +19,7 @@ public class Text implements MifData
 		this.text = text;
 	}
 
+   /** Text, up to 255 characters. Can have \n in it. */
 	public String getText()
 	{
 		return text;

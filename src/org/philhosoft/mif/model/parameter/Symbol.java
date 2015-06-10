@@ -9,7 +9,7 @@ public class Symbol implements MifDataParameter
 	private int size;
 	private String fontName;
 	private int fontStyle;
-	private int rotation;
+	private float rotation;
 
 	public Symbol(int shape, int color, int size)
 	{
@@ -30,27 +30,41 @@ public class Symbol implements MifDataParameter
 		this.rotation = rotation;
 	}
 
+	/** 31 to 67. 31 = blank symbol. */
 	public int getShape()
 	{
 		return shape;
 	}
+	/** 24-bit RGB color value. */
 	public int getColor()
 	{
 		return color;
 	}
+	/** 1 to 48. Point size. */
 	public int getSize()
 	{
 		return size;
 	}
+	/** TrueType font name. */
 	public String getFontName()
 	{
 		return fontName;
 	}
+	/**
+	 * Font style:.
+	 * 0   plain text
+	 * 1   bold text
+	 * 16  black border around symbol
+	 * 32  drop shadow
+	 * 256 white border around symbol
+	 * Can add values to combine them.
+	 */
 	public int getFontStyle()
 	{
 		return fontStyle;
 	}
-	public int getRotation()
+	/** Rotation in degrees. */
+	public float getRotation()
 	{
 		return rotation;
 	}
@@ -75,7 +89,7 @@ public class Symbol implements MifDataParameter
 	{
 		this.fontStyle = fontStyle;
 	}
-	public void setRotation(int rotation)
+	public void setRotation(float rotation)
 	{
 		this.rotation = rotation;
 	}

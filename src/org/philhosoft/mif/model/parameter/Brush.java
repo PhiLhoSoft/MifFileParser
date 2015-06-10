@@ -6,24 +6,29 @@ public class Brush implements MifDataParameter
 {
 	private int pattern;
 	private int foreColor;
-	private int backColor;
+	private Integer backColor;
 
-	public Brush(int pattern, int foreColor, int backColor)
+	public Brush(int pattern, int foreColor, Integer backColor)
 	{
 		this.pattern = pattern;
 		this.foreColor = foreColor;
 		this.backColor = backColor;
 	}
 
+	/** 1 to 71. 1 is "no fill," and 2 is a solid fill.
+	 * Pattern numbers 9-11 are reserved.
+	 */
 	public int getPattern()
 	{
 		return pattern;
 	}
+	/** 24-bit RGB color value. */
 	public int getForeColor()
 	{
 		return foreColor;
 	}
-	public int getBackColor()
+	/** 24-bit RGB color value. If omitted (null here), it is a transparent fill style. */
+	public Integer getBackColor()
 	{
 		return backColor;
 	}
@@ -36,7 +41,7 @@ public class Brush implements MifDataParameter
 	{
 		this.foreColor = foreColor;
 	}
-	public void setBackColor(int backColor)
+	public void setBackColor(Integer backColor)
 	{
 		this.backColor = backColor;
 	}

@@ -6,7 +6,7 @@ import org.philhosoft.mif.parser.DefaultParser;
 import org.philhosoft.mif.parser.ParsingContext;
 
 
-/* BRUSH (pattern, forecolor, backcolor) */
+/* BRUSH (pattern, forecolor[, backcolor]) */
 public class BrushParser extends DefaultParser implements ParameterParser
 {
 	public static final String KEYWORD = "BRUSH";
@@ -26,12 +26,21 @@ public class BrushParser extends DefaultParser implements ParameterParser
 
 		String parameter = line.substring(getKeyword().length() + 1);
 		ParenthesizedParameterParser triplet = new ParenthesizedParameterParser(parameter, context);
-		if (triplet.getParameterNumber() != 3)
+		Brush brush;
+		if (triplet.getParameterNumber() == 3)
+		{
+			brush = new Brush(triplet.getIntParameter(0), triplet.getIntParameter(1), triplet.getIntParameter(2));
+		}
+		else if (triplet.getParameterNumber() == 2)
+		{
+			brush = new Brush(triplet.getIntParameter(0), triplet.getIntParameter(1), null);
+		}
+		else
 		{
 			context.addError("Wrong number of parameters for " + KEYWORD);
-			return new Brush(0, 0, 0);
+			brush = new Brush(0, 0, 0);
 		}
 
-		return new Brush(triplet.getIntParameter(0), triplet.getIntParameter(1), triplet.getIntParameter(2));
+		return brush;
 	}
 }

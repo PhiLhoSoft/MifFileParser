@@ -26,25 +26,28 @@ public class Arc implements MifData
 		return corner2;
 	}
 
+	/** Angle in degrees. */
 	public double getStartAngle()
 	{
 		return startAngle;
 	}
-	public void setStartAngle(double startAngle)
-	{
-		this.startAngle = startAngle;
-	}
+	/** Angle in degrees. */
 	public double getEndAngle()
 	{
 		return endAngle;
 	}
-	public void setEndAngle(double endAngle)
-	{
-		this.endAngle = endAngle;
-	}
 	public Pen getPen()
 	{
 		return pen;
+	}
+
+	public void setStartAngle(double startAngle)
+	{
+		this.startAngle = startAngle;
+	}
+	public void setEndAngle(double endAngle)
+	{
+		this.endAngle = endAngle;
 	}
 	public void setPen(Pen pen)
 	{
