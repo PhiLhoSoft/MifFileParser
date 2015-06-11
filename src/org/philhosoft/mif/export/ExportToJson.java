@@ -40,10 +40,12 @@ public class ExportToJson
 	private OutputStream output;
 	private Charset charset;
 	private String documentName;
+	private int inverter;
 
-	public ExportToJson(MifFileContent fileContent, String documentName)
+	public ExportToJson(MifFileContent fileContent, String documentName, boolean invert)
 	{
 		this.documentName = documentName;
+		this.inverter = invert ? -1 : 1;
 		if (fileContent == null) throw new IllegalArgumentException("File content cannot be null");
 
 		this.fileContent = fileContent;
@@ -85,7 +87,7 @@ public class ExportToJson
 			}
 		}
 
-		DataToJsonVisitor jsonVisitor = new DataToJsonVisitor();
+		DataToJsonVisitor jsonVisitor = new DataToJsonVisitor(inverter);
 
 		write("{\n");
 		write("  \"name\":", "\"" + documentName + "\",\n");
@@ -170,11 +172,11 @@ public class ExportToJson
 		output.write('\n');
 	}
 
-	private void writePolygon(String id, String path, boolean close) throws IOException
+	private void writePolygon(String id, String path) throws IOException
 	{
 		write("    {\n");
 		write("      \"id\":", "\"" + id + "\",\n");
-		write("      \"path\": \"M" + path + (close ? " Z" : "") + "\"\n");
+		write("      \"path\": \"" + path + "\"\n");
 		write("    }");
 	}
 
@@ -188,25 +190,58 @@ public class ExportToJson
 	private static class DataToJsonVisitor implements MifData.Visitor<ExportToJson, Void>
 	{
 		private int counter; // Ensure uniqueness of ids
+		private int inverter; // To invert (or not) the y coordinates
 
-		private void writePolygon(String id, List<CoordinatePair> polygon, boolean close, ExportToJson exporter) throws IOException
+		public DataToJsonVisitor(int inverter)
+		{
+			this.inverter = inverter;
+		}
+
+		private void writeRegion(String id, List<List<CoordinatePair>> polygonList, ExportToJson exporter) throws IOException
 		{
 			StringBuilder path = new StringBuilder();
+			boolean first = true;
+			for (List<CoordinatePair> polygon : polygonList)
+			{
+				if (first)
+				{
+					first = false;
+				}
+				else
+				{
+					path.append(' ');
+				}
+				path.append("M");
+				for (CoordinatePair cp : polygon)
+				{
+					path.append(' ').append(dts(cp.getX())).append(',').append(dts(inverter * cp.getY()));
+				}
+				path.append(" Z"); // Closed
+			}
+			exporter.writePolygon(id, path.toString());
+		}
+		private void writePolygon(String id, List<CoordinatePair> polygon, boolean close, ExportToJson exporter) throws IOException
+		{
+			StringBuilder path = new StringBuilder("M");
 			for (CoordinatePair cp : polygon)
 			{
-				path.append(' ').append(dts(cp.getX())).append(',').append(dts(cp.getY()));
+				path.append(' ').append(dts(cp.getX())).append(',').append(dts(inverter * cp.getY()));
 			}
-			exporter.writePolygon(id, path.toString(), close);
+			if (close)
+			{
+				path.append(" Z");
+			}
+			exporter.writePolygon(id, path.toString());
 		}
 		private void writeEmpty(String id, CoordinatePair point, ExportToJson exporter) throws IOException
 		{
 			if (point == null)
 			{
-				exporter.writePolygon(id, " 0,0", false);
+				exporter.writePolygon(id, "M 0,0");
 			}
 			else
 			{
-				exporter.writePolygon(id, " " + dts(point.getX()) + "," + dts(point.getY()), false);
+				exporter.writePolygon(id, "M " + dts(point.getX()) + "," + dts(inverter * point.getY()));
 			}
 		}
 
@@ -285,16 +320,7 @@ public class ExportToJson
 		@Override
 		public Void visit(Region data, ExportToJson exporter) throws Exception
 		{
-			int last = data.getPolygons().size();
-			int count = 0;
-			for (List<CoordinatePair> polygon : data.getPolygons())
-			{
-				writePolygon(makeId(RegionParser.KEYWORD), polygon, true, exporter); // Closed
-				if (count++ < last - 1)
-				{
-					exporter.write(",\n");
-				}
-			}
+			writeRegion(makeId(RegionParser.KEYWORD), data.getPolygons(), exporter);
 			return null;
 		}
 

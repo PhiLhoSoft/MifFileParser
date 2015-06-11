@@ -26,13 +26,14 @@ public class MifFileParser
 		MifFileParser parser = new MifFileParser();
 		if (args.length == 0)
 		{
-			System.out.println("Usage: java " + parser.getClass().getName() + " fileToParse");
+			System.out.println("Usage: java " + parser.getClass().getName() + " fileToParse [I]\n" +
+					"If the I argument is given, the y coordinates are inverted in Json export.");
 			return;
 		}
-		parser.process(args[0]);
+		parser.process(args[0], args.length > 1 && args[1].equalsIgnoreCase("I"));
 	}
 
-	private void process(String fileName) throws FileNotFoundException, IOException, Exception
+	private void process(String fileName, boolean invert) throws FileNotFoundException, IOException, Exception
 	{
 		File mifFile = new File(fileName);
 		InputStream is = new FileInputStream(mifFile);
@@ -65,17 +66,17 @@ public class MifFileParser
 		// Show warnings
 		System.out.println(collector);
 
-		doExports(mifFile, fileContent);
+		doExports(mifFile, fileContent, invert);
 
 		System.out.println("Done");
 	}
 
-	private void doExports(File mifFile, MifFileContent fileContent) throws FileNotFoundException, Exception
+	private void doExports(File mifFile, MifFileContent fileContent, boolean invert) throws FileNotFoundException, Exception
 	{
 		String documentName = mifFile.getName();
 		String documentPath = mifFile.getAbsolutePath();
 		exportToMif(fileContent, documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.mif"));
-		exportToJson(fileContent, documentName, documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.json"));
+		exportToJson(fileContent, documentName, documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.json"), invert);
 	}
 
 	private static void exportToMif(MifFileContent fileContent, String outputPath) throws FileNotFoundException, Exception
@@ -96,9 +97,9 @@ public class MifFileParser
 		exporter.export(output, charset);
 	}
 
-	private static void exportToJson(MifFileContent fileContent, String documentName, String outputPath) throws FileNotFoundException, Exception
+	private static void exportToJson(MifFileContent fileContent, String documentName, String outputPath, boolean invert) throws FileNotFoundException, Exception
 	{
-		ExportToJson exporter = new ExportToJson(fileContent, documentName);
+		ExportToJson exporter = new ExportToJson(fileContent, documentName, invert);
 
 		Charset charset;
 		try
