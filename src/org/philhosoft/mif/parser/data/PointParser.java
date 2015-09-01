@@ -28,11 +28,7 @@ public class PointParser extends DefaultParser implements MifDataParser
 	@Override
 	public MifData parseData(ParsingContext context)
 	{
-		String line = context.getCurrentLine();
-		if (line == null)
-			throw new IllegalStateException();
-
-		String parameter = line.substring(getKeyword().length() + 1);
+		String parameter = readParameter(context);
 		String[] coordinates = parameter.split(" ");
 		if (coordinates.length != 2)
 		{
@@ -45,7 +41,6 @@ public class PointParser extends DefaultParser implements MifDataParser
 		Point point = new Point(coordinatePair);
 		if (context.readNextLine())
 		{
-			line = context.getCurrentLine();
 			SymbolParser parser = new SymbolParser();
 			if (parser.canParse(context))
 			{

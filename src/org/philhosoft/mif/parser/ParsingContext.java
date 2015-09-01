@@ -23,16 +23,18 @@ public class ParsingContext
 	/**
 	 * Reads next line from the file.
 	 *
-	 * @return true if successful
+	 * @return true if successful (otherwise, current line is null)
 	 */
 	public boolean readNextLine()
 	{
 		if (keepCurrentLine)
 		{
 			keepCurrentLine = false;
-			return true;
 		}
-		currentLine = reader.readLine(this);
+		else
+		{
+			currentLine = reader.readLine(this);
+		}
 		return currentLine != null;
 	}
 

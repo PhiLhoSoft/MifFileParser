@@ -43,7 +43,7 @@ public class RoundedRectangleParser extends FourCoordinatesDataParser implements
 		{
 			rounding = Double.parseDouble(line);
 		}
-		catch (NumberFormatException e)
+		catch (NumberFormatException | NullPointerException e)
 		{
 			context.addError("Invalid rounded rectangle degree of rounding");
 		}

@@ -9,7 +9,7 @@ import org.philhosoft.mif.parser.ParsingContext;
 
 
 /*
- TEXT ”textstring”
+ TEXT "textstring"
  x1 y1 x2 y2
  [ FONT... ]
  [ Spacing {1.0 | 1.5 | 2.0} ]
@@ -34,23 +34,21 @@ public class TextParser extends DefaultParser implements MifDataParser
 	@Override
 	public MifData parseData(ParsingContext context)
 	{
-		String line = context.getCurrentLine();
-		if (line == null)
-			throw new IllegalStateException();
-
-		String parameter = line.substring(getKeyword().length() + 1).trim();
+		String parameter = readParameter(context);
+		Text text;
 		if (!parameter.startsWith("\"") || !parameter.endsWith("\""))
 		{
 			context.addError("Invalid parameter syntax: no quotes");
-			return new Text("");
+			text = new Text(parameter); // Still give what is found
 		}
-		String textParameter = parameter.substring(1, parameter.length() - 1);
-
-		Text text = new Text(textParameter);
+		else
+		{
+			String textParameter = parameter.substring(1, parameter.length() - 1);
+			text = new Text(textParameter);
+		}
 
 		if (context.readNextLine())
 		{
-			line = context.getCurrentLine();
 			coordinateParser.parseCoordinates(context);
 			text.setCorner1(coordinateParser.coordinates1);
 			text.setCorner2(coordinateParser.coordinates2);
@@ -61,18 +59,12 @@ public class TextParser extends DefaultParser implements MifDataParser
 		}
 
 		// Currently just skip / ignore the options
-		int i = 0;
-		boolean successful = true;
-		while (context.readNextLine() && successful)
-		{
-			String value = lineParser.parse(OPTIONS[i++], context);
-			// TODO store the value in the text object!
-			successful = value != null;
-		}
+		lineParser.skipKnownKeywordLines(OPTIONS, context);
 
 		return text;
 	}
 
+	/** Allows to parse four coordinates on a line without keyword. */
 	private class TextCoordinatesParser extends FourCoordinatesDataParser
 	{
 		@Override

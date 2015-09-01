@@ -5,8 +5,8 @@ import org.philhosoft.mif.model.MifFileContent;
 
 /*
 VERSION n
-Charset ”characterSetName”
-[ DELIMITER ”<c>” ]
+Charset "characterSetName"
+[ DELIMITER "<c>"]
 [ UNIQUE n,n... ]
 [ INDEX n,n... ]
 [ COORDSYS... ]
@@ -50,20 +50,10 @@ public class HeaderParser
 		}
 		fc.setCharset(lineParser.parse(HEADER_CHARSET, context));
 
-		// Tries to parse each kind of optional header
-		boolean successful = true;
-		while (successful && context.readNextLine())
-		{
-			int i = 0;
-			for (; i < HEADERS.length; i++)
-			{
-				String value = lineParser.parse(HEADERS[i], context);
-				if (value != null)
-					break;
-			}
-			successful = i < HEADERS.length;
-		}
+		// Skips the optional headers, not supported yet
+		lineParser.skipKnownKeywordLines(HEADERS, context);
 
+		context.readNextLine();
 		String columnNbParam = lineParser.parse(HEADER_COLUMNS, context);
 		if (columnNbParam != null)
 		{
@@ -72,7 +62,7 @@ public class HeaderParser
 			{
 				columnNb = Integer.parseInt(columnNbParam);
 			}
-			catch (NumberFormatException e)
+			catch (NumberFormatException | NullPointerException e)
 			{
 				context.addError("Incorrect " + HEADER_COLUMNS + " parameter");
 				return fc;
@@ -90,7 +80,7 @@ public class HeaderParser
 
 		context.readNextLine();
 		String data = context.getCurrentLine();
-		if (!data.toUpperCase().equals(HEADER_DATA))
+		if (data == null || !data.toUpperCase().equals(HEADER_DATA))
 		{
 			context.addError("No " + HEADER_DATA + " line found");
 			return fc;

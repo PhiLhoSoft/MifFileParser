@@ -48,23 +48,13 @@ public class RegionParser extends DefaultParser implements MifDataParser
 	{
 		Region region = new Region();
 
-		// Read data
-		String line = context.getCurrentLine();
-		if (line == null)
-			throw new IllegalStateException();
-
-		if (line.length() < getKeyword().length() + 2)
-		{
-			context.addError("No number of polygons for " + getKeyword());
-			return null;
-		}
-		String parameter = line.substring(getKeyword().length() + 1).trim();
+		String parameter = readParameter(context);
 		int polygonNumber = 0;
 		try
 		{
 			polygonNumber = Integer.valueOf(parameter);
 		}
-		catch (NumberFormatException e)
+		catch (NumberFormatException | NullPointerException e)
 		{
 			context.addError("Invalid number of polygons for " + getKeyword());
 			return null;
@@ -91,7 +81,7 @@ public class RegionParser extends DefaultParser implements MifDataParser
 		{
 			coordinateNb = Integer.valueOf(line);
 		}
-		catch (NumberFormatException e)
+		catch (NumberFormatException | NullPointerException e)
 		{
 			context.addError("Invalid number of coordinates for " + getKeyword());
 			return;

@@ -49,6 +49,8 @@ public class MifFileParser
 		catch (RuntimeException e)
 		{
 			System.err.println(e.getMessage());
+			// Can still use a partial result, perhaps
+			fileContent = parser.getFileContent();
 		}
 		finally
 		{
@@ -66,7 +68,15 @@ public class MifFileParser
 		// Show warnings
 		System.out.println(collector);
 
-		doExports(mifFile, fileContent, invert);
+		if (fileContent == null)
+		{
+			// An exception has been thrown (and caught), don't export
+			System.err.println("Had errors (see above)");
+		}
+		else
+		{
+			doExports(mifFile, fileContent, invert);
+		}
 
 		System.out.println("Done");
 	}

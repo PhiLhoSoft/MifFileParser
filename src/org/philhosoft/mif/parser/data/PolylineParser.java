@@ -92,7 +92,7 @@ public class PolylineParser extends DefaultParser implements MifDataParser
 		{
 			coordinateNb = Integer.valueOf(line);
 		}
-		catch (NumberFormatException e)
+		catch (NumberFormatException | NullPointerException e)
 		{
 			context.addError("Invalid number of coordinates for " + getKeyword());
 			return;

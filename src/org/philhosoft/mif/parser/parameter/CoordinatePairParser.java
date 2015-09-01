@@ -16,7 +16,10 @@ public class CoordinatePairParser implements ParameterParser
 	@Override
 	public boolean canParse(ParsingContext context)
 	{
-		return context.getCurrentLine().contains(" ") || context.getCurrentLine().contains("\t");
+		String line = context.getCurrentLine();
+		if (line == null)
+			return false;
+		return line.contains(" ") || line.contains("\t");
 	}
 
 	/**

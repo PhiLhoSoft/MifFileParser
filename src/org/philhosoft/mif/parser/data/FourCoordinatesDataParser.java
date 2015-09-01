@@ -12,21 +12,23 @@ public abstract class FourCoordinatesDataParser extends DefaultParser
 	protected CoordinatePair coordinates1;
 	protected CoordinatePair coordinates2;
 
+	/**
+	 * Parses the current line to extract four coordinates.
+	 * Skips the keyword, if not null.
+	 */
 	public void parseCoordinates(ParsingContext context)
 	{
-		String line = context.getCurrentLine();
-		if (line == null)
-			throw new IllegalStateException(); // Should not happen!
-
 		String keyword = getKeyword();
 		String parameter;
-		if (keyword == null)
+		if (keyword != null)
 		{
-			parameter = line; // Parameter stands on its own line
+			parameter = readParameter(context);
 		}
 		else
 		{
-			parameter = line.substring(keyword.length() + 1);
+			parameter = context.getCurrentLine();
+			if (parameter == null)
+				parameter = "";
 		}
 		String[] coordinates = parameter.split("\\s+");
 		if (coordinates.length != 4)

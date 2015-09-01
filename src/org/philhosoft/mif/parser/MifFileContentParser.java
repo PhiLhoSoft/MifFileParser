@@ -19,6 +19,7 @@ import org.philhosoft.mif.parser.data.TextParser;
 public class MifFileContentParser
 {
 	private List<MifDataParser> parsers = new ArrayList<>();
+	private MifFileContent fileContent;
 
 	public MifFileContentParser()
 	{
@@ -37,7 +38,7 @@ public class MifFileContentParser
 	public MifFileContent parseContent(ParsingContext context)
 	{
 		HeaderParser headerParser = new HeaderParser();
-		MifFileContent fileContent = headerParser.parse(context);
+		fileContent = headerParser.parse(context);
 		if (context.getMessageCollector().hasErrors())
 		{
 			return fileContent; // Partial content?
@@ -45,7 +46,7 @@ public class MifFileContentParser
 
 		while (context.readNextLine())
 		{
-			if (context.getCurrentLine().trim().isEmpty())
+			if (context.getCurrentLine().isEmpty())
 				continue;
 			boolean parsed = false;
 			for (MifDataParser parser : parsers)
@@ -67,6 +68,11 @@ public class MifFileContentParser
 			}
 		}
 
+		return fileContent;
+	}
+
+	public MifFileContent getFileContent()
+	{
 		return fileContent;
 	}
 }
