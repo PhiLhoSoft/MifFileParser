@@ -1,0 +1,94 @@
+Recipe to convert relative SVG paths to absolute
+
+Why?
+Highmaps conversion tool www.highcharts.com/studies/map-from-svg.htm and Highmaps itself don't understand relative Bézier curves (c) so we must convert them to absolute ones (C).
+
+How?
+Via a script found at http://stackoverflow.com/questions/9677885/convert-svg-path-to-absolute-commands
+
+Procedure
+Download a SVG file, for example one from http://d-maps.com/
+In some cases, it can be useful to load it in Inkscape, and to save it back (renamed) in plain SVG format.
+While doing that, you can (should) remove the legend, frame, etc.
+To do that, you might need to first select the shape and do Object > Ungroup, several times if needed.
+
+Then open a copy of this copy in a text editor, and just before the </svg> ending tag, paste the following code:
+
+<script><![CDATA[
+// Based on http://stackoverflow.com/questions/9677885/convert-svg-path-to-absolute-commands
+SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+(function()
+{
+  var svg = document.querySelector('svg');
+  var script = document.querySelector('script'); // This script (should be at the end of the SVG, just before </svg>)
+
+  var group = document.createElementNS(SVG_NAMESPACE, 'g');
+  group.setAttribute('id', 'AbsoluteClone');
+  group.setAttribute('transform', 'translate(800, 0)');
+  svg.insertBefore(group, script);
+
+  var paths = document.querySelectorAll('path');
+  console.log(paths.length);
+  for (var p = 0; p < paths.length; p++)
+  {
+    path = paths[p];
+    //console.log(path);
+    var dupd = group.appendChild(path.cloneNode(true));
+    convertToAbsolute(dupd);
+    //console.log(path.getAttribute('d'));
+    console.log(dupd.getAttribute('d'));
+  }
+})();
+
+function convertToAbsolute(path)
+{
+  var x0, y0, x1, y1, x2, y2, segs = path.pathSegList;
+  for (var x = 0, y = 0, i = 0, len = segs.numberOfItems; i < len; i++)
+  {
+    var seg = segs.getItem(i), c = seg.pathSegTypeAsLetter;
+    if (/[MLHVCSQTA]/.test(c))
+    {
+      if ('x' in seg) x = seg.x;
+      if ('y' in seg) y = seg.y;
+    }
+    else
+    {
+      if ('x1' in seg) x1 = x + seg.x1;
+      if ('x2' in seg) x2 = x + seg.x2;
+      if ('y1' in seg) y1 = y + seg.y1;
+      if ('y2' in seg) y2 = y + seg.y2;
+      if ('x'  in seg) x += seg.x;
+      if ('y'  in seg) y += seg.y;
+      switch (c)
+      {
+        case 'm': segs.replaceItem(path.createSVGPathSegMovetoAbs(x, y), i);                       break;
+        case 'l': segs.replaceItem(path.createSVGPathSegLinetoAbs(x, y), i);                       break;
+        case 'h': segs.replaceItem(path.createSVGPathSegLinetoHorizontalAbs(x), i);                break;
+        case 'v': segs.replaceItem(path.createSVGPathSegLinetoVerticalAbs(y), i);                  break;
+        case 'c': segs.replaceItem(path.createSVGPathSegCurvetoCubicAbs(x, y, x1, y1, x2, y2), i); break;
+        case 's': segs.replaceItem(path.createSVGPathSegCurvetoCubicSmoothAbs(x, y, x2, y2), i);   break;
+        case 'q': segs.replaceItem(path.createSVGPathSegCurvetoQuadraticAbs(x, y, x1, y1), i);     break;
+        case 't': segs.replaceItem(path.createSVGPathSegCurvetoQuadraticSmoothAbs(x, y), i);       break;
+        case 'a': segs.replaceItem(path.createSVGPathSegArcAbs(x, y, seg.r1, seg.r2, seg.angle, seg.largeArcFlag,seg.sweepFlag), i); break;
+        case 'z': case 'Z': x = x0; y = y0; break;
+      }
+    }
+    // Record the start of a subpath
+    if (c == 'M' || c == 'm') x0 = x, y0 = y;
+  }
+}
+]]></script>
+
+
+You can then drag'n'drop the SVG file in a browser, eg. Firefox with Firebug.
+You should see the SVG image duplicated: the original on the left, and a copy with absolute paths on the right.
+
+Note: These images can overlap.
+If you want to see cleanly the duplicate (not mandatory), you might want to adjust the width parameter of the <svg> tag, and to change the first parameter of the translate() call above, to be greater than the width of the original shape.
+
+The duplicate absolute shape cannot be saved to disk (AFAIK), but the changed paths are output to the console of Firebug.
+So open the console, clear it if needed, refresh the page and you can select all (Ctrl+A) and copy all these paths.
+They are then ready to paste in a clean SVG file, or even directly in a map Json file.
+
+Alternatively, still in Firebug, go to the HTML tab showing the SVG, right click on the top-level SVG tag and choose Copy as SVG.
+You can then paste in an editor and take what is needed.
