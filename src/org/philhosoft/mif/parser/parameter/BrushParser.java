@@ -24,7 +24,7 @@ public class BrushParser extends DefaultParser implements ParameterParser
 		if (line == null)
 			throw new IllegalStateException();
 
-		String parameter = line.substring(getKeyword().length() + 1);
+		String parameter = line.substring(getKeyword().length()).trim();
 		ParenthesizedParameterParser triplet = new ParenthesizedParameterParser(parameter, context);
 		Brush brush;
 		if (triplet.getParameterNumber() == 3)

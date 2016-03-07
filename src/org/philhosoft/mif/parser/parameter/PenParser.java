@@ -24,7 +24,7 @@ public class PenParser extends DefaultParser implements ParameterParser
 		if (line == null)
 			throw new IllegalStateException(); // Should not happen!
 
-		String parameter = line.substring(getKeyword().length() + 1);
+		String parameter = line.substring(getKeyword().length()).trim();
 		ParenthesizedParameterParser triplet = new ParenthesizedParameterParser(parameter, context);
 		if (triplet.getParameterNumber() != 3)
 		{

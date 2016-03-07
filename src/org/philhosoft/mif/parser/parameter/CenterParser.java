@@ -24,7 +24,7 @@ public class CenterParser extends DefaultParser implements ParameterParser
 		if (line == null)
 			throw new IllegalStateException();
 
-		String parameter = line.substring(getKeyword().length() + 1);
+		String parameter = line.substring(getKeyword().length()).trim();
 		String[] coordinates = parameter.split("\\s+");
 		if (coordinates.length != 2)
 		{

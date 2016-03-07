@@ -24,7 +24,7 @@ public class SymbolParser extends DefaultParser implements ParameterParser
 		if (line == null)
 			throw new IllegalStateException();
 
-		String parameter = line.substring(getKeyword().length() + 1);
+		String parameter = line.substring(getKeyword().length()).trim();
 		ParenthesizedParameterParser parameters = new ParenthesizedParameterParser(parameter, context);
 		if (parameters.getParameterNumber() == 3)
 		{
