@@ -6,3 +6,7 @@ bin/
 output/
 test-bin/
 test-output/
+/target/
+.settings
+.classpath
+.project
