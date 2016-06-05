@@ -35,7 +35,7 @@ public class MifFileParser
 
 	private void process(String fileName, boolean invert) throws FileNotFoundException, IOException, Exception
 	{
-	    System.out.println("Start");
+		System.out.println("Start");
 		File mifFile = new File(fileName);
 		InputStream is = new FileInputStream(mifFile);
 		MifReader reader = new MifReader(is);
@@ -87,11 +87,11 @@ public class MifFileParser
 		String documentName = mifFile.getName();
 		String documentPath = mifFile.getAbsolutePath();
 		String mifPath = documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.mif");
-		System.out.println("Export to "+mifPath);
-        exportToMif(fileContent, mifPath);
+		System.out.println("Export to " + mifPath);
+		exportToMif(fileContent, mifPath);
 		String jsonPath = documentPath.replaceFirst("\\.[mM][iI][fF]$", "_export.json");
-		System.out.println("Export to "+jsonPath);
-        exportToJson(fileContent, documentName, jsonPath, invert);
+		System.out.println("Export to " + jsonPath);
+		exportToJson(fileContent, documentName, jsonPath, invert);
 	}
 
 	private static void exportToMif(MifFileContent fileContent, String outputPath) throws FileNotFoundException, Exception
